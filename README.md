@@ -1,0 +1,2 @@
+# UpLift
+Automated Donation Platform
