@@ -14,8 +14,8 @@ class User(db.Model, SerializerMixin):
     password = db.Column(db.String, nullable = False, )
     role = db.Column(db.String, nullable=False)
     user_name = db.Column(db.String, nullable=False)
-    first_name = db.Column(db.String, nullable=False)
-    second_name = db.Column(db.String, nullable=False)
+    official_name = db.Column(db.String, nullable=False)
+    
 
     donations = db.relationship('Donation', backref='donor')
 
@@ -41,8 +41,8 @@ class User(db.Model, SerializerMixin):
             'password': self.password,
             'role': self.role,
             'user_name': self.user_name,
-            'first_name': self.first_name,
-            'second_name': self.second_name
+            'official_name': self.official_name_name
+            
         }
 
 class Charity(db.Model, SerializerMixin):
