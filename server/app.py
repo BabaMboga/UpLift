@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, make_response
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
 from flask_cors import CORS
 from models import db, User, Charity, Donation, Beneficiary, Inventory
@@ -90,10 +90,15 @@ def login():
     if not username or not password:
         return jsonify({'message': 'Missing username or password'}), 400
 
-    # Validate the user's credentials and retrieve the user from the database (code for validation and retrieval goes here)
+    # Retrieve the user from the database
+    user = User.query.filter_by(user_name=username).first()
 
-    # For the sake of this example, we'll create a dummy access token
-    access_token = 'dummy-access-token'
+    #Check if the user exists and validate the password
+    if not user or not check_password_hash(user.password,password):
+        return jsonify({'message':'Invalid username or password'}), 401
+
+    # Generate an access token for the authenticated user
+    access_token = create_access_token(identity=user.id)
 
     return jsonify({'access_token': access_token}), 200
 
