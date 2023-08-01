@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.sql import func
+from email_validator import validate_email, EmailNotValidError
 
 
 db = SQLAlchemy()
@@ -19,6 +20,16 @@ class User(db.Model, SerializerMixin):
     donations = db.relationship('Donation', backref='donor')
 
     serialize_rules = ("-donation.user")
+
+# Validate the email address
+    @db.validates('email')
+    def validate_email(self,key,email):
+        try:
+            valid_email = validate_email(email)
+            return valid_email.email
+        except EmailNotValidError as e:
+            raise ValueError(f"Invalid email address: {e}")
+
 
     def __repr__(self):
         return f'User: {self.user_name}, ID: {self.id}, Role: {self.role}'
