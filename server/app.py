@@ -15,7 +15,10 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
 
 jwt = JWTManager(app)
-CORS(app)
+#allows all origins and should be changed after development
+CORS(app, resources={r"/*": {"origins":"*"}})
+#when in production
+#CORS(app, resources={r"/*": {"origins": "https://your_trusted-frontend-domain.com"}})
 migrate = Migrate(app,db)
 db.init_app(app)
 
@@ -74,7 +77,7 @@ def signup():
 
     # Save the user information in the database
     db.session.add(new_user)
-    db.session.comit()
+    db.session.commit()
 
     return jsonify({'message': 'User created successfully'}), 201
 
