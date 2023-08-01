@@ -12,7 +12,7 @@ class User(Base):
     role = Column(String, nullable=False)
     user_name = Column(String, nullable=False)
     first_name = Column(String, nullable=False)
-    second_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
 
     donations = relationship('Donation', back_populates='donor')
 
