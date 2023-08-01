@@ -22,6 +22,17 @@ class User(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'User: {self.user_name}, ID: {self.id}, Role: {self.role}'
+    
+    def to_dict(self):
+        return {
+            'id' : self.id,
+            'email' :self.email,
+            'password': self.password,
+            'role': self.role,
+            'user_name': self.user_name,
+            'first_name': self.first_name,
+            'second_name': self.second_name
+        }
 
 class Charity(db.Model, SerializerMixin):
     __tablename__ = 'charities'
@@ -40,6 +51,15 @@ class Charity(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'Name: {self.name} of ID: {self.charity_id} has received {self.amount_received}'
+    
+    def to_dict(self):
+        return {
+            'charity_id':self.charity_id,
+            'name': self.name,
+            'description':self.description,
+            'status': self.status,
+            'amount_received':self.amount_received
+        }
 
 class Donation(db.Model, SerializerMixin):
     __tablename__ = 'donations'
@@ -61,6 +81,19 @@ class Donation(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f"{self.amount} was donated on {self.donation_date} by donor of ID: {self.donor_id}"
+    
+    def to_dict(self):
+        return{
+            'donation_id':self.donation_id,
+            'donor_id': self.donor_id,
+            'charity_id': self.charity_id,
+            'amount':self.amount,
+            'donation_date':self.donation_date,
+            'is_anonymous': self.is_anonymous,
+            'schedule_start_date': self.schedule_start_date,
+            'schedule_end_date':self.schedule_end_date,
+            'schedule_frequency':self.schedule_frequency
+        }
 
 class Beneficiary(db.Model, SerializerMixin):
     __tablename__ = 'beneficiaries'
@@ -75,6 +108,13 @@ class Beneficiary(db.Model, SerializerMixin):
     def __repr__(self):
         return f"{self.beneficiary_name} of charity ID:{self.charity_id} says {self.story}"
     
+    def to_dict(self):
+        return {
+            'beneficiary_id':self.beneficiary_id,
+            'charity_id':self.charity_id,
+            'beneficiary_name':self.beneficiary_name,
+            'story': self.story
+        }
 
     
 
@@ -91,5 +131,15 @@ class Inventory(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f"{self.item_name} was sent on {self.date_sent} by charity{self.charity_id}"
+    
+    def to_dict(self):
+        return {
+            'inventory_id': self.inventory_id,
+            'charity_id':self.charity_id,
+            'item_name':self.item_name,
+            'quantity':self.quantity,
+            'date_sent':self.date_sent 
+            
+        }
 
     
