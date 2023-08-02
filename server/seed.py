@@ -17,8 +17,8 @@ with app.app_context():
         text_model = markovify.Text(text_corpus)
         return text_model.make_sentence(max_length=max_length)
     
-    #The below block of code will now be used to train the markov to generate good random text
-    caption_corpus = """
+    #The below block of code will now be used to train the markov to generate good random story for beneficiary
+    story_caption_corpus = """
         The school received a donation of new textbooks and supplies.
         Thanks to your generosity, families now have access to clean water.
         With your help, we provided warm blankets to those in need during the winter.
@@ -128,27 +128,39 @@ with app.app_context():
     num_donors = 0 
     num_charities = 0
 
+    #List of charity names
+    charity_names_list = [
+        "Hopeful Hearts Charity","Brighter Futures Foundation","Helping Hands Organization","Compassionate Care Fund","Global Impact Initiative","Love and Light Charity","Bridge of Dreams Initiative","Empowering Communities Charity",
+        "Wings of Compassion Trust","Together We Thrive Foundation","Reach for the Stars Charity","Embrace Diversity Organization","Seeds of Peace Foundation","Hand in Hand Relief Fund","Building Bridges Charity","Rays of Sunshine Charity",
+        "Empowerment for All","Community Builders Charity","Caring Souls Society","Giving Back Foundation","Inspire Change Network","Bright Beginnings Foundation","Wings of Change Initiative","Empowering Tomorrow's Leaders",
+        "Dream Big Charity","Unity in Diversity Foundation","Heal the World Mission","Rise Up Together Foundation","Kindness Matters Association","United in Hope Foundation","Open Hearts Community","Breaking Barriers Foundation",
+        "Share the Love Charity","Changing Lives Project","One Step at a Time Charity","Open Arms Support Group","Rays of Hope Foundation","Care and Share Initiative","Change the World Organization","Wings of Hope Mission",
+        "Embracing Humanity Foundation","Shine Your Light Charity","Uplift the World Association","New Horizons Charity","Better Tomorrow Project","Helping Hearts Alliance","Rise Above Adversity Charity","Light of Love Foundation",
+        "Bridge the Gap Charity","Infinite Possibilities Trust"
+    ]
+
     with open('user_credentials.txt', 'w') as file:
         for _ in range(200):
             email = None
             while not email or email in unique_emails:
                 email = fake.email()
             password = fake.password()
+            username = fake.user_name()
             # Assign roles based on the counts: 140 donors, 10 admins, and 50 charities
             if num_donors < 140:
                 role = 'donor'
                 num_donors += 1
+                official_name = f"{fake.first_name()} {fake.last_name()}"
             elif num_admins < 10:
                 role = 'admin'
                 num_admins += 1
+                official_name = f"{fake.first_name()} {fake.last_name()}"
             else:
                 role = 'charity'
                 num_charities += 1
+                official_name=charity_names_list.pop()
 
-            username = fake.user_name()
-            first_name = fake.first_name()
-            last_name = fake.last_name()
-
+            
             #Validate email format
             if '@' not in email or '.' not in email:
                 continue
@@ -161,8 +173,7 @@ with app.app_context():
                 password = hashed_password,
                 role=role,
                 user_name=username,
-                first_name=first_name,
-                second_name = last_name
+                official_name=official_name
             )
             
             db.session.add(new_user)
@@ -173,3 +184,109 @@ with app.app_context():
 
             if num_donors == 140 and num_admins == 10 and num_charities == 50:
                 break
+
+    print("Users successfully seeded")
+
+    #The below code will now be used to train the makovify to generate comprehendable descriptions for charities
+    description_caption_corpus="""
+        Hopeful Hearts Charity embraces hope for a brighter future.
+        Brighter Futures Foundation empowers individuals for a brighter tomorrow.
+        Helping Hands Organization extends helping hands to those in need.
+        Compassionate Care Fund provides compassionate care to all.
+        Global Impact Initiative strives for a positive global impact.
+        Empowerment for All empowers everyone to reach their full potential.
+        Community Builders Charity builds strong communities through unity.
+        Caring Souls Society cares for the souls of those it serves.
+        Giving Back Foundation believes in giving back to society.
+        Inspire Change Network inspires positive change in the world.
+        Dream Big Charity encourages everyone to dream big.
+        Unity in Diversity Foundation celebrates the beauty of diversity.
+        Heal the World Mission works to heal the world with kindness.
+        Rise Up Together Foundation rises together for a common cause.
+        Kindness Matters Association spreads kindness wherever it goes.
+        Share the Love Charity shares love and compassion with all.
+        Changing Lives Project changes lives through transformative projects.
+        One Step at a Time Charity takes one step at a time for progress.
+        Open Arms Support Group welcomes all with open arms.
+        Rays of Hope Foundation brings rays of hope to those in need.
+        Love and Light Charity shines the light of love on all.
+        Bridge of Dreams Initiative bridges dreams and reality.
+        Empowering Communities Charity empowers communities for growth.
+        Wings of Compassion Trust spreads wings of compassion far and wide.
+        Together We Thrive Foundation thrives together as a united force.
+        Reach for the Stars Charity encourages individuals to reach for their dreams.
+        Embrace Diversity Organization embraces the beauty of diversity.
+        Seeds of Peace Foundation plants seeds of peace in the world.
+        Hand in Hand Relief Fund offers a helping hand to those in crisis.
+        Building Bridges Charity builds bridges for better connections.
+        Wings of Hope Mission brings hope to those in despair.
+        Embracing Humanity Foundation embraces the humanity in all of us.
+        Shine Your Light Charity encourages everyone to shine their light.
+        Uplift the World Association aims to uplift the world with positivity.
+        New Horizons Charity opens doors to new horizons for all.
+        Better Tomorrow Project works for a better tomorrow for everyone.
+        Helping Hearts Alliance aligns hearts to help those in need.
+        Bright Beginnings Foundation starts bright beginnings for a better future.
+        Wings of Change Initiative brings positive change like the wind.
+        Empowering Tomorrow's Leaders empowers the leaders of tomorrow.
+        Rays of Sunshine Charity spreads rays of sunshine to all.
+        United in Hope Foundation stands united in the hope for a better world.
+        Open Hearts Community embraces everyone with open hearts.
+        Breaking Barriers Foundation breaks barriers for progress.
+        Care and Share Initiative cares and shares with those less fortunate.
+        Change the World Organization strives to change the world for the better.
+        Rise Above Adversity Charity rises above adversity with strength.
+        Light of Love Foundation shines the light of love on all it serves.
+        Bridge the Gap Charity bridges the gap for those in need.
+        Infinite Possibilities Trust believes in the infinite possibilities of change.
+        Embrace the Journey Charity embraces the journey of growth and transformation.
+        Empower Minds Foundation empowers minds with knowledge and education.
+        Hope in Action Organization turns hope into action to make a real impact.
+        Together We Soar Foundation believes in soaring together towards a brighter future.
+        Changing Tides Initiative brings positive change like changing tides in the ocean.
+        United Hearts Charity unites hearts with love and compassion for all.
+        Bridge to Success Foundation builds bridges to lead individuals to success.
+        Rays of Compassion Mission spreads rays of compassion and empathy to all.
+        Dreams to Reality Charity turns dreams into reality for those in need.
+        Open Minds Society promotes open minds and acceptance in society.
+        Empowering Hands Association empowers individuals through helping hands.
+        Hearts United Fund unites hearts and resources to create positive change.
+        Embrace Diversity Foundation embraces the beauty of diversity in humanity.
+        Reach for the Skies Charity encourages individuals to reach for the skies.
+        Steps Towards Hope Initiative takes steps towards bringing hope to all.
+        Rising Together Foundation rises together as a community for collective progress.
+        Light the Path Charity lights the path for those in search of guidance.
+        Caring Connections Organization fosters caring connections within communities.
+        Change-makers Alliance brings change-makers together for a common cause.
+        Building Dreams Together Initiative builds dreams together for a better world.
+        Hopeful Horizons Mission looks forward to hopeful and bright horizons.
+        Empowerment Waves Charity creates waves of empowerment in society.
+        Seeds of Change Foundation plants seeds of positive change for all.
+        Embrace the Challenge Organization embraces challenges with determination.
+        Empowering Voices Association empowers voices to be heard and valued.
+        Light the World Foundation seeks to light the world with compassion and love.
+        United in Kindness Mission stands united in spreading kindness far and wide.
+        Reach Out and Care Initiative reaches out to those in need with care and support.
+        Rays of Inspiration Fund brings rays of inspiration to individuals' lives.
+        Hearts in Harmony Charity aims for hearts to beat in harmony with each other.
+        Bridge of Opportunities Organization builds bridges of opportunities for all.
+        Embrace the Possibilities Foundation embraces the endless possibilities of change.
+        Together We Serve Charity believes in serving together for a greater purpose.
+        Changing Lives Together Initiative is committed to changing lives together.
+        Hopeful Hearts United brings together hopeful hearts to make a difference.
+        Empowerment Pathways Fund paves pathways to empowerment for all.
+        Seeds of Hope Initiative plants seeds of hope for a brighter tomorrow.
+        Embrace the Journey Together Foundation embraces the journey together as one.
+        Rise Above and Shine Charity encourages individuals to rise above and shine.
+        Caring Hands Network extends caring hands to those in need.
+        Change Starts Within Organization believes change starts within oneself.
+        Building Together for Tomorrow Initiative builds together for a better tomorrow.
+        Hearts Full of Hope Charity has hearts full of hope for those it serves.
+        United by Compassion Mission stands united by the power of compassion.
+        Reach for Dreams Foundation encourages individuals to reach for their dreams.
+        Rays of Support Association offers rays of support to those in distress.
+        Light the Way Initiative lights the way for those in search of a path.
+        Hearts in Harmony Together Foundation believes in harmony through togetherness.
+        Bridging the Divide Charity bridges the divide between communities.
+        Empower and Inspire Organization aims to empower and inspire all.
+    """
