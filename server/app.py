@@ -143,6 +143,31 @@ def approve_delete_charity(charity_id):
         return jsonify({'message': 'Charity deleted successfully'}), 200
     else:
         return jsonify({'message':'Invalid action'}), 400
+    
+@app.route('/beneficiaries', methods=['GET'])
+@jwt_required
+def get_all_beneficiaries():
+    current_user_id = get_jwt_identity()
+
+    user = User.query.get(current_user_id)
+
+    if user.role not in ('admin', 'charity'):
+        return make_response(
+            jsonify({'message': 'Unauthorized access'}),
+            403
+        )
+    
+    beneficiaries = Beneficiary.query.all()
+
+    beneficiaries_data = [beneficiary.to_dict() for beneficiary in beneficiaries]
+
+    response = make_response(jsonify({'beneficiaries': beneficiaries_data}),
+                             200
+                )
+
+    return response
+    
+
 
 if __name__ == '__main__':
     app.run(debug=True)
