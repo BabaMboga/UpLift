@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, make_response
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -104,6 +104,45 @@ def login():
     access_token = create_access_token(identity=user.id)
 
     return jsonify({'access_token': access_token}), 200
+
+@app.route('/admins/<int:charity_id>', methods=['POST'])
+@jwt_required #Return a valid JWT token to access this endpoint
+def approve_delete_charity(charity_id):
+    #Get the authenticated user's identity from the JWT token
+    current_user_id = get_jwt_identity()
+
+    #Retrieve the user from the database
+    user = User.query.get(current_user_id)
+
+    #Check if the user is an 'admin'
+    if user.role != 'admin':
+        return jsonify({'message': 'Unauthorized access'}), 403
+    
+    #Retrieve the charity from the database
+    charity = Charity.query.get(charity_id)
+
+    #Check if the charity exists
+    if not charity:
+        return jsonify({'message': 'Charity not found'}), 404
+    
+    #perform the actions based on the request data
+    data = request.get_json()
+    if not data:
+        return jsonify({'message': 'Missing JSON data in the request'}), 400
+    
+    action = data.get('action')
+
+    if action =='approve':
+        
+        charity.status = True
+        db.session.commit()
+        return jsonify({'message': 'Charity approved successfully'}), 200
+    elif action == 'delete':
+        db.session.delete(charity)
+        db.session.commit()
+        return jsonify({'message': 'Charity deleted successfully'}), 200
+    else:
+        return jsonify({'message':'Invalid action'}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)
