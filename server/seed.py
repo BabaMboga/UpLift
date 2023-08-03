@@ -6,6 +6,7 @@ import random
 from werkzeug.security import generate_password_hash
 from datetime import timedelta
 
+
 print("Seeding has started.")
 
 fake = Faker()
@@ -140,9 +141,11 @@ with app.app_context():
         "Bridge the Gap Charity","Infinite Possibilities Trust"
     ]
 
+    valid_email_domains = ["gmail.com", "yahoo.com","hotmail.com"]
+
     with open('user_credentials.txt', 'w') as file:
         while num_donors < 140:            
-            email = fake.email()
+            email = fake.email(domain=random.choice(valid_email_domains))
             password = fake.password()
             username = fake.user_name()
 
@@ -172,7 +175,7 @@ with app.app_context():
             num_donors += 1
 
         while num_admins< 10:
-            email = fake.email()
+            email = fake.email(domain=random.choice(valid_email_domains))
             password = fake.password()
             username = fake.user_name()
 
@@ -201,8 +204,8 @@ with app.app_context():
 
             num_admins += 1
 
-        while num_charities < 50:
-            email = fake.email()
+        for charity_name in  charity_names_list:
+            email = fake.email(domain=random.choice(valid_email_domains))
             password = fake.password()
             username = fake.user_name()
 
@@ -220,7 +223,7 @@ with app.app_context():
                 password = hashed_password,
                 role='charity',
                 user_name=username,
-                official_name=charity_names_list.pop()
+                official_name=charity_name
             )
 
             db.session.add(new_user)
@@ -229,11 +232,7 @@ with app.app_context():
             # Write the user and password details to the text file
             file.write(f"User: {username}, Email: {email}, Password: {password}, Role: {new_user.role}\n")
 
-            num_charities += 1
-
-
-            if num_donors == 140 and num_admins == 10 and num_charities == 50:
-                break
+            
 
     print("Users successfully seeded")
 
@@ -381,13 +380,13 @@ with app.app_context():
 
         )
         # Set schedule_start_date and schedule_end_date 
-        if donation.schedule_freequency in ["weekly", "monthly"]:
+        if donation.schedule_frequency in ["weekly", "monthly"]:
             donation.schedule_start_date = fake.date_time_this_year()
 
             if donation.schedule_frequency == "weekly":
                 donation.schedule_end_date = donation.schedule_start_date + timedelta(weeks=4)
             else:
-                donation.schedule_end_date = donation.schedule_start_date + timedelta(months=4)
+                donation.schedule_end_date = donation.schedule_start_date + timedelta(days=120)
 
 
         db.session.add(donation)
