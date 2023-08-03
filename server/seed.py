@@ -4,6 +4,7 @@ from faker import Faker
 import markovify
 import random
 from werkzeug.security import generate_password_hash
+from datetime import timedelta
 
 print("Seeding has started.")
 
@@ -13,7 +14,7 @@ with app.app_context():
     db.drop_all()
     db.create_all()
 
-    def generte_random_text(text_corpus, max_length=255):
+    def generate_random_text(text_corpus, max_length=255):
         text_model = markovify.Text(text_corpus)
         return text_model.make_sentence(max_length=max_length)
     
@@ -140,29 +141,15 @@ with app.app_context():
     ]
 
     with open('user_credentials.txt', 'w') as file:
-        for _ in range(200):
-            email = None
-            while not email or email in unique_emails:
-                email = fake.email()
+        while num_donors < 140:            
+            email = fake.email()
             password = fake.password()
             username = fake.user_name()
-            # Assign roles based on the counts: 140 donors, 10 admins, and 50 charities
-            if num_donors < 140:
-                role = 'donor'
-                num_donors += 1
-                official_name = f"{fake.first_name()} {fake.last_name()}"
-            elif num_admins < 10:
-                role = 'admin'
-                num_admins += 1
-                official_name = f"{fake.first_name()} {fake.last_name()}"
-            else:
-                role = 'charity'
-                num_charities += 1
-                official_name=charity_names_list.pop()
 
-            
-            #Validate email format
+             #Validate email format
             if '@' not in email or '.' not in email:
+                continue
+            if email in unique_emails:
                 continue
 
             unique_emails.add(email)
@@ -171,16 +158,79 @@ with app.app_context():
             new_user = User(
                 email = email,
                 password = hashed_password,
-                role=role,
+                role='donor',
                 user_name=username,
-                official_name=official_name
+                official_name=fake.name()
             )
-            
+
             db.session.add(new_user)
             db.session.commit()
-            
+
             # Write the user and password details to the text file
-            file.write(f"User: {username}, Email: {email}, Password: {password}, Role: {role}\n")
+            file.write(f"User: {username}, Email: {email}, Password: {password}, Role: {new_user.role}\n")
+
+            num_donors += 1
+
+        while num_admins< 10:
+            email = fake.email()
+            password = fake.password()
+            username = fake.user_name()
+
+             #Validate email format
+            if '@' not in email or '.' not in email:
+                continue
+            if email in unique_emails:
+                continue
+
+            unique_emails.add(email)
+
+            hashed_password = generate_password_hash(password)
+            new_user = User(
+                email = email,
+                password = hashed_password,
+                role='admin',
+                user_name=username,
+                official_name=fake.name()
+            )
+
+            db.session.add(new_user)
+            db.session.commit()
+
+            # Write the user and password details to the text file
+            file.write(f"User: {username}, Email: {email}, Password: {password}, Role: {new_user.role}\n")
+
+            num_admins += 1
+
+        while num_charities < 50:
+            email = fake.email()
+            password = fake.password()
+            username = fake.user_name()
+
+             #Validate email format
+            if '@' not in email or '.' not in email:
+                continue
+            if email in unique_emails:
+                continue
+
+            unique_emails.add(email)
+
+            hashed_password = generate_password_hash(password)
+            new_user = User(
+                email = email,
+                password = hashed_password,
+                role='charity',
+                user_name=username,
+                official_name=charity_names_list.pop()
+            )
+
+            db.session.add(new_user)
+            db.session.commit()
+
+            # Write the user and password details to the text file
+            file.write(f"User: {username}, Email: {email}, Password: {password}, Role: {new_user.role}\n")
+
+            num_charities += 1
+
 
             if num_donors == 140 and num_admins == 10 and num_charities == 50:
                 break
@@ -290,3 +340,102 @@ with app.app_context():
         Bridging the Divide Charity bridges the divide between communities.
         Empower and Inspire Organization aims to empower and inspire all.
     """
+
+    print("Users Successfully seeded")
+
+    for _ in range(50):
+        charity_name = charity_names_list.pop()
+        description = generate_random_text(description_caption_corpus)
+        status = random.choice([True, False])
+        amount_received = random.randint(1000, 1000000)
+
+        new_charity = Charity(
+            name=charity_name,
+            description = description,
+            status=status,
+            amount_received=amount_received
+        )
+
+        db.session.add(new_charity)
+        db.session.commit()
+
+    print("Charities sucessfully seeded")
+
+    # creating 200 fake donations
+
+    users = User.query.filter_by(role='donor').all()
+    charities = Charity.query.filter_by(status = True).all()
+    for _ in range(200):
+        donor = random.choice(users)
+        charity = random.choice(charities)
+        donation = Donation(
+            donor_id = donor.id,
+            charity_id = charity.charity_id,
+            amount = random.uniform(10,1000),
+            donation_date = fake.date_time_this_year(),
+            is_anonymous = random.choice([True, False]),
+            schedule_frequency= random.choice(["none","weekly","monthly"]),
+            schedule_start_date = None,
+            schedule_end_date=None
+            
+
+        )
+        # Set schedule_start_date and schedule_end_date 
+        if donation.schedule_freequency in ["weekly", "monthly"]:
+            donation.schedule_start_date = fake.date_time_this_year()
+
+            if donation.schedule_frequency == "weekly":
+                donation.schedule_end_date = donation.schedule_start_date + timedelta(weeks=4)
+            else:
+                donation.schedule_end_date = donation.schedule_start_date + timedelta(months=4)
+
+
+        db.session.add(donation)
+        db.session.commit()
+
+    print("Donations successfully seeded")
+
+    # Create 200 beneficiaries
+    for _ in range(200):
+        charity= random.choice(charities)
+        beneficiary = Beneficiary(
+            charity_id = charity.charity_id,
+            beneficiary_name = fake.name(),
+            story = generate_random_text(story_caption_corpus)
+        )
+        db.session.add(beneficiary)
+        db.session.commit()
+
+    print("Benefeciaries successfully seeded")
+
+    #create 100 inventory entries
+
+    #list of inventory items
+    inventory_items = [
+        "Rice", "Beans", "Canned goods", "Flour", "Cooking oil", "Pasta", "Soap", "Shampoo", "Toothpaste", "Toothbrushes",
+        "Sanitary pads", "Diapers", "T-shirts", "Pants", "Shoes", "Blankets", "Bed sheets", "School bags", "Notebooks",
+        "Pens and pencils", "Stationery items", "First aid kits", "Bandages", "Over-the-counter medicines", "Water filters",
+        "Water purification tablets", "Cooking utensils", "Plates and cutlery", "Cooking stoves", "Solar-powered lights",
+        "Mobile phones", "Chickens", "Goats", "Seeds", "Computers", "Projectors", "Books and educational materials",
+        "Mosquito nets", "Sleeping mats", "Flashlights", "Batteries", "Sewing machines", "Clothing fabric", "Raincoats",
+        "Solar panels", "Hand tools", "Sewing supplies", "Farming tools", "Vegetable seeds", "Educational toys"
+    ]
+
+    for _ in range(100):
+        charity = random.choice(charities)
+        item_name = random.choice(inventory_items)
+        quantity = random.randint(1, 100)
+        date_sent = fake.date_time_this_year()
+
+        inventory = Inventory(
+            charity_id = charity.charity_id,
+            item_name = item_name,
+            quantity = quantity,
+            date_sent = date_sent
+        )
+
+        db.session.add(inventory)
+        db.session.commit()
+
+    print("Inventories successfully seeded")
+    print("Finished seeding")
