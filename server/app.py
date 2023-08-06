@@ -171,3 +171,76 @@ def get_all_beneficiaries():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    
+    
+    
+    
+    
+    
+# @app.route('/charities', methods=['GET'])
+# def get_charities():
+#     charities = Charity.query.all()
+#     data = {
+#         "charities": [
+#             {
+#                 "id": charity.id,
+#                 "name": charity.name,
+#                 "logo": charity.logo,
+#                 "total_amount_donated": charity.total_amount_donated,
+#                 "testimonials": [
+#                     {
+#                         "author": testimonial.author,
+#                         "testimonial": testimonial.testimonial
+#                     }
+#                     for testimonial in charity.testimonials
+#                 ]
+#             }
+#             for charity in charities
+#         ]
+#     }
+#     return jsonify(data)
+
+
+# @app.route('/charities/<int:charity_id>', methods=['DELETE'])
+# def delete_charity(charity_id):
+#     try:
+#         charity = Charity.query.get(charity_id)
+#         if not charity:
+#             return jsonify({"message": "Charity not found"}), 404
+
+#         db.session.delete(charity)
+#         db.session.commit()
+
+#         return jsonify({"message": "Charity deleted successfully"}), 200
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 400
+
+
+
+
+# @app.route('/application', methods=['POST'])
+# def create_charity_application():
+#     try:
+#         data = request.get_json()
+#         imageURL = data['imageURL']
+#         name = data['name']
+#         description = data['description']
+
+#         application = CharityApplication(imageURL=imageURL, name=name, description=description)
+#         db.session.add(application)
+#         db.session.commit()
+
+#         return jsonify({"message": "Charity application submitted successfully."}), 201
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 400
+    
+    
+# @app.route('/applications', methods=['GET'])
+# def get_charity_applications():
+#     try:
+#         applications = CharityApplication.query.all()
+#         application_list = [app.to_dict() for app in applications]
+#         return jsonify(application_list), 200
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 400  
+    

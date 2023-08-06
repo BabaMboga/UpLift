@@ -438,3 +438,55 @@ with app.app_context():
 
     print("Inventories successfully seeded")
     print("Finished seeding")
+    
+    
+    
+    
+    
+    
+    
+    # def seed_data():
+#     with app.app_context():
+#         charities_data = {
+#             "charities": [
+#                 {
+#                     "id": 1,
+#                     "name": "Charity A",
+#                     "logo": "https://images.unsplash.com/photo-1494832944834-a08818c634b0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDZ8fHxlbnwwfHx8fHw%3D&auto=format&fit=crop&w=500&q=60",
+#                     "total_amount_donated": 5000,
+#                     "testimonials": [
+#                         {
+#                             "author": "Williams",
+#                             "testimonial": "Charity A made a significant impact on our community. Their efforts are commendable!"
+#                         },
+#                         {
+#                             "author": "Jane Smith",
+#                             "testimonial": "I'm so grateful for the help I received from Charity A during my difficult times. Thank you!"
+#                         },
+#                     ]
+#                 }
+                
+            
+#                 # Add other charities data here...
+#             ]
+#         }
+
+#         for charity_data in charities_data["charities"]:
+#             charity = Charity(
+#                 id=charity_data["id"],
+#                 name=charity_data["name"],
+#                 logo=charity_data["logo"],
+#                 total_amount_donated=charity_data["total_amount_donated"]
+#             )
+
+#             for testimonial_data in charity_data["testimonials"]:
+#                 testimonial = Testimonial(
+#                     author=testimonial_data["author"],
+#                     testimonial=testimonial_data["testimonial"],
+#                     charity=charity
+#                 )
+#                 db.session.add(testimonial)
+
+#             db.session.add(charity)
+
+#         db.session.commit()

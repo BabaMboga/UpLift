@@ -152,3 +152,33 @@ class Inventory(db.Model, SerializerMixin):
             'date_sent':self.date_sent 
             
         }
+        
+        
+# class Charity(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(100), nullable=False)
+#     logo = db.Column(db.String(200), nullable=False)
+#     total_amount_donated = db.Column(db.Float, default=0)
+#     testimonials = db.relationship('Testimonial', backref='charity', lazy=True)
+
+# class Testimonial(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     author = db.Column(db.String(100), nullable=False)
+#     testimonial = db.Column(db.Text, nullable=False)
+#     charity_id = db.Column(db.Integer, db.ForeignKey('charity.id'), nullable=False)
+# class CharityApplication(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     imageURL = db.Column(db.String(500), nullable=False)
+#     name = db.Column(db.String(100), nullable=False)
+#     description = db.Column(db.String(500), nullable=False)
+
+#     def to_dict(self):
+#         return {
+#             "id": self.id,
+#             "imageURL": self.imageURL,
+#             "name": self.name,
+#             "description": self.description,
+#         }    
+      
+      
+        
