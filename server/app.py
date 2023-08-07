@@ -144,9 +144,9 @@ def approve_delete_charity(charity_id):
     else:
         return jsonify({'message':'Invalid action'}), 400
     
-@app.route('/beneficiaries', methods=['GET'])
+@app.route('/admin/beneficiaries', methods=['GET'])
 @jwt_required
-def get_all_beneficiaries():
+def get_beneficiaries():
     current_user_id = get_jwt_identity()
 
     user = User.query.get(current_user_id)
@@ -166,6 +166,7 @@ def get_all_beneficiaries():
                 )
 
     return response
+
 @app.route('/charities', methods=['GET'])
 @jwt_required
 def get_charities():
@@ -210,7 +211,7 @@ def get_beneficiary_by_charity_id(charity_id):
 
 # @app.route('/admin/beneficiaries', methods=['GET'])
 # @jwt_required
-# def get_beneficiaries_for_admin():
+# def get_all_beneficiaries_for_admin():
 #     beneficiaries_list = []
 
 #     for beneficiary in Beneficiary.query.all():
