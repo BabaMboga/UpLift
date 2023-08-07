@@ -177,6 +177,8 @@ def get_charities():
     charity_list = [{'charity_id': charity.charity_id, 'name': charity.name} for charity in charities]
     return jsonify({'charities': charity_list}), 200
 
+
+
 @app.route('/charities', methods=['POST'])
 def create_charity():
     data = request.get_json()
@@ -208,8 +210,8 @@ def get_beneficiary_by_charity_id(charity_id):
                     )
     return response
     
-
-
+    
+    
 if __name__ == '__main__':
     app.run(debug=True)
     

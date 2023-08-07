@@ -7,7 +7,7 @@ import Admin from './AdminPage/Admin';
 import Home from './DonatePage/Home';
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   // Function to handle login (you can customize this as needed)
   const handleLogin = (username, password) => {

@@ -47,7 +47,7 @@ const CharityPage = () => {
             onClick={() => setIsModalOpen(true)}
             className="font-epilogue cursor-pointer mt-3 bg-white text-black py-2 px-4 rounded-[10px]"
           >
-            Apply
+            Apply for Charity
           </div>
           <Link
             to="/login"
@@ -57,8 +57,19 @@ const CharityPage = () => {
           </Link>
         </div>
       </div>
+{/* 
+      <h1 className="text-white font-epilogue font-bold">charity page</h1> */}
 
-      <h1 className="text-white font-epilogue font-bold">charity page</h1>
+      <h1 className="font-epilogue font-semibold text-[28px] text-white text-left mt-6">
+        Beneficiaries Stories
+      </h1>
+
+      
+
+      <h1 className="font-epilogue font-semibold text-[28px] text-white text-left mt-6">
+      Inventory sent to the beneficiaries
+
+      </h1>
 
       {/* Modal */}
       {isModalOpen && (
@@ -68,53 +79,60 @@ const CharityPage = () => {
               className="close absolute top-0 right-0 mt-3 mr-3 text-gray-700 text-2xl cursor-pointer"
               onClick={() => setIsModalOpen(false)}
             >
-              &times;
+              &times; x
             </span>
             <h2 className="text-2xl font-semibold mb-4 font-epilogue">Charity Application</h2>
             <div className="mb-4">
-              <label htmlFor="imageURL" className="font-epilogue">
-                Image URL:
-              </label>
-              <input
-                type="text"
-                id="imageURL"
-                value={imageURL}
-                onChange={(e) => setImageURL(e.target.value)}
-                className="ml-2 border border-gray-400 p-1 rounded"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="charityName" className="font-epilogue">
-                Name of Charity:
-              </label>
-              <input
-                type="text"
-                id="charityName"
-                value={charityName}
-                onChange={(e) => setCharityName(e.target.value)}
-                className="ml-2 border border-gray-400 p-1 rounded"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="charityDescription" className="font-epilogue">
-                Description of Charity:
-              </label>
-              <textarea
-                id="charityDescription"
-                value={charityDescription}
-                onChange={(e) => setCharityDescription(e.target.value)}
-                className="ml-2 border border-gray-400 p-1 rounded"
-              />
-            </div>
+  <label htmlFor="imageURL" className="font-epilogue w-32">
+    Image URL:
+  </label>
+  <input
+    type="text"
+    id="imageURL"
+    value={imageURL}
+    onChange={(e) => setImageURL(e.target.value)}
+    className="ml-2 border border-gray-400 p-1 rounded"
+  />
+</div>
+<div className="mb-4">
+  <label htmlFor="charityName" className="font-epilogue w-32">
+    Name of Charity:
+  </label>
+  <input
+    type="text"
+    id="charityName"
+    value={charityName}
+    onChange={(e) => setCharityName(e.target.value)}
+    className="ml-2 border border-gray-400 p-1 rounded"
+  />
+</div>
+<div className="mb-4">
+  <label htmlFor="charityDescription" className="font-epilogue w-32">
+    Description of Charity:
+  </label>
+  <textarea
+    id="charityDescription"
+    value={charityDescription}
+    onChange={(e) => setCharityDescription(e.target.value)}
+    className="ml-2 border border-gray-400 p-1 rounded"
+  />
+</div>
+
+
             <button
               onClick={handleSubmit}
               className="font-epilogue bg-blue-500 text-white py-2 px-4 rounded"
             >
               Submit
             </button>
+            <button  
+             onClick={() => setIsModalOpen(false)}
+            className="bg-red-400 text-white px-4 py-2 mt-4 rounded-lg ml-4"
+                >close</button>
           </div>
         </div>
       )}
+
     </div>
   );
 };
