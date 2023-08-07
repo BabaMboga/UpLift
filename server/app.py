@@ -207,6 +207,37 @@ def get_beneficiary_by_charity_id(charity_id):
                     200
                     )
     return response
+
+# @app.route('/admin/beneficiaries', methods=['GET'])
+# @jwt_required
+# def get_beneficiaries_for_admin():
+#     beneficiaries_list = []
+
+#     for beneficiary in Beneficiary.query.all():
+#         beneficiaries_list.append({
+#             'beneficiary_id': beneficiary.beneficiary_id,
+#             'charity_id': beneficiary.charity_id,
+#             'beneficiary_name': beneficiary.beneficiary_name,
+#             'story': beneficiary.story
+#         })
+
+#     return jsonify({'beneficiaries': beneficiaries_list}), 200
+
+@app.route('/admin/inventory', methods=['GET'])
+@jwt_required
+def get_inventory_for_admin():
+    inventory_list = []
+
+    for inventory_item in Inventory.query.all():
+        inventory_list.append({
+            'inventory_id': inventory_item.inventory_id,
+            'charity_id': inventory_item.charity_id,
+            'item_name': inventory_item.item_name,
+            'quantity': inventory_item.quantity,
+            'date_sent': inventory_item.date_sent
+        })
+
+    return jsonify({'inventory': inventory_list}), 200
     
 
 
