@@ -27,11 +27,11 @@ db.init_app(app)
     # Create the database tables (Since we removed User table, we don't need this anymore)
     # db.create_all()
 
-@app.route('/')
+@app.route('/', endpoint="index")
 def index():
     return "This is The UpLift User/Charit/Donation/Beneficiary/Inventory API"
 
-@app.route('/signup', methods=['POST'])  # Require a valid JWT token to access this endpoint
+@app.route('/signup',endpoint="signup", methods=['POST'])  # Require a valid JWT token to access this endpoint
 def signup():
     data = request.get_json()
     if not data:
@@ -81,7 +81,7 @@ def signup():
 
     return jsonify({'message': 'User created successfully'}), 201
 
-@app.route('/login', methods=['POST'])
+@app.route('/login',endpoint="login",methods=['POST'])
 def login():
     data = request.get_json()
     if not data:
@@ -105,7 +105,7 @@ def login():
 
     return jsonify({'access_token': access_token}), 200
 
-@app.route('/admins/<int:charity_id>', methods=['POST'])
+@app.route('/admins/<int:charity_id>',endpoint="approve_delete_charity", methods=['POST'])
 @jwt_required #Return a valid JWT token to access this endpoint
 def approve_delete_charity(charity_id):
     #Get the authenticated user's identity from the JWT token
@@ -144,9 +144,9 @@ def approve_delete_charity(charity_id):
     else:
         return jsonify({'message':'Invalid action'}), 400
     
-@app.route('/beneficiaries', methods=['GET'])
+@app.route('/admin/beneficiaries',endpoint="get_beneficiaries", methods=['GET'])
 @jwt_required
-def get_all_beneficiaries():
+def get_beneficiaries():
     current_user_id = get_jwt_identity()
 
     user = User.query.get(current_user_id)
@@ -162,11 +162,11 @@ def get_all_beneficiaries():
     beneficiaries_data = [beneficiary.to_dict() for beneficiary in beneficiaries]
 
     response = make_response(jsonify({'beneficiaries': beneficiaries_data}),
-                             200
-                )
+                             200)
 
     return response
-@app.route('/charities', methods=['GET'])
+
+@app.route('/charities',endpoint="get_charities", methods=['GET'])
 @jwt_required
 def get_charities():
     charities = Charity.query.filter_by(status=True).all()
@@ -177,9 +177,7 @@ def get_charities():
     charity_list = [{'charity_id': charity.charity_id, 'name': charity.name} for charity in charities]
     return jsonify({'charities': charity_list}), 200
 
-
-
-@app.route('/charities', methods=['POST'])
+@app.route('/charities',endpoint="create_charity", methods=['POST'])
 def create_charity():
     data = request.get_json()
     name = data.get('name')
@@ -194,7 +192,7 @@ def create_charity():
 
     return jsonify({'message': 'Charity created successfully.', 'charity_id': new_charity.charity_id}), 201
 
-@app.route('/beneficiaries/<int:charity_id>', methods=['GET'])
+@app.route('/beneficiaries/<int:charity_id>',endpoint="get_beneficiary_by_charity_id", methods=['GET'])
 @jwt_required
 def get_beneficiary_by_charity_id(charity_id):
     beneficiaries = Beneficiary.query.filter_by(charity_id=charity_id).all()
@@ -209,6 +207,37 @@ def get_beneficiary_by_charity_id(charity_id):
                     200
                     )
     return response
+
+# @app.route('/admin/beneficiaries', methods=['GET'])
+# @jwt_required
+# def get_all_beneficiaries_for_admin():
+#     beneficiaries_list = []
+
+#     for beneficiary in Beneficiary.query.all():
+#         beneficiaries_list.append({
+#             'beneficiary_id': beneficiary.beneficiary_id,
+#             'charity_id': beneficiary.charity_id,
+#             'beneficiary_name': beneficiary.beneficiary_name,
+#             'story': beneficiary.story
+#         })
+
+#     return jsonify({'beneficiaries': beneficiaries_list}), 200
+
+@app.route('/admin/inventory',endpoint='get_inventory_for_admin', methods=['GET'])
+@jwt_required
+def get_inventory_for_admin():
+    inventory_list = []
+
+    for inventory_item in Inventory.query.all():
+        inventory_list.append({
+            'inventory_id': inventory_item.inventory_id,
+            'charity_id': inventory_item.charity_id,
+            'item_name': inventory_item.item_name,
+            'quantity': inventory_item.quantity,
+            'date_sent': inventory_item.date_sent
+        })
+
+    return jsonify({'inventory': inventory_list}), 200
     
     
     
@@ -220,70 +249,5 @@ if __name__ == '__main__':
     
     
     
-# @app.route('/charities', methods=['GET'])
-# def get_charities():
-#     charities = Charity.query.all()
-#     data = {
-#         "charities": [
-#             {
-#                 "id": charity.id,
-#                 "name": charity.name,
-#                 "logo": charity.logo,
-#                 "total_amount_donated": charity.total_amount_donated,
-#                 "testimonials": [
-#                     {
-#                         "author": testimonial.author,
-#                         "testimonial": testimonial.testimonial
-#                     }
-#                     for testimonial in charity.testimonials
-#                 ]
-#             }
-#             for charity in charities
-#         ]
-#     }
-#     return jsonify(data)
 
-
-# @app.route('/charities/<int:charity_id>', methods=['DELETE'])
-# def delete_charity(charity_id):
-#     try:
-#         charity = Charity.query.get(charity_id)
-#         if not charity:
-#             return jsonify({"message": "Charity not found"}), 404
-
-#         db.session.delete(charity)
-#         db.session.commit()
-
-#         return jsonify({"message": "Charity deleted successfully"}), 200
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 400
-
-
-
-
-# @app.route('/application', methods=['POST'])
-# def create_charity_application():
-#     try:
-#         data = request.get_json()
-#         imageURL = data['imageURL']
-#         name = data['name']
-#         description = data['description']
-
-#         application = CharityApplication(imageURL=imageURL, name=name, description=description)
-#         db.session.add(application)
-#         db.session.commit()
-
-#         return jsonify({"message": "Charity application submitted successfully."}), 201
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 400
-    
-    
-# @app.route('/applications', methods=['GET'])
-# def get_charity_applications():
-#     try:
-#         applications = CharityApplication.query.all()
-#         application_list = [app.to_dict() for app in applications]
-#         return jsonify(application_list), 200
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 400  
     
