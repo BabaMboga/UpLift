@@ -192,7 +192,7 @@ def create_charity():
 
     return jsonify({'message': 'Charity created successfully.', 'charity_id': new_charity.charity_id}), 201
 
-@app.route('/beneficiaies/<int:charity_id', methods=['GET'])
+@app.route('/beneficiaries/<int:charity_id>', methods=['GET'])
 @jwt_required
 def get_beneficiary_by_charity_id(charity_id):
     beneficiaries = Beneficiary.query.filter_by(charity_id=charity_id).all()
