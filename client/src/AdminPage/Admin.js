@@ -102,7 +102,7 @@ const Admin = () => {
           <div className="bg-white p-4 rounded-lg">
             {/* Modal content */}
             <button
-              className="absolute top-2 right-2 text-whitehover:text-gray-800"
+              className="absolute top-2 right-2 text-white text-[28px] font-bold"
               onClick={() => setShowModal(false)}
             >
               X
@@ -138,6 +138,13 @@ const Admin = () => {
                 >
                   Next Application
                 </button>
+
+                <button
+                   onClick={() => setShowModal(false)}
+                  className="bg-red-400 text-white px-4 py-2 mt-4 rounded-lg ml-4"
+                >
+                  close
+                </button>
               </>
             ) : (
               <p>No charity applications to review.</p>
@@ -149,44 +156,48 @@ const Admin = () => {
       <h1 className="font-epilogue font-semibold text-[28px] text-white text-left mt-6">
         Admin page
       </h1>
-      <ul className="mt-8">
-        {charities.map((charity) => (
-          <li key={charity.id} className="text-white font-epilogue font-semibold flex items-center space-x-4">
-            <img
-              src={charity.logo}
-              alt={charity.name}
-              className="w-20 h-20 object-cover rounded-full"
-            />
-            <span>{charity.name}</span>
-            <button
-              onClick={() => handleDeleteCharity(charity.id)}
-              className="ml-2 bg-red-500 text-white px-4 py-1 rounded"
-            >
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
+      <div className="mt-8 grid grid-cols-2 gap-4">
+  {charities.map((charity) => (
+    <div key={charity.id} className="text-white font-epilogue font-semibold flex items-center space-x-4">
+      <img
+        src={charity.logo}
+        alt={charity.name}
+        className="w-20 h-20 object-cover rounded-full"
+      />
+      <span>{charity.name}</span>
+      <button
+        onClick={() => handleDeleteCharity(charity.id)}
+        className="ml-2 bg-red-500 text-white px-4 py-1 rounded"
+      >
+        Delete
+      </button>
+    </div>
+  ))}
+</div>
+
+
       <div>
         <h1 className="font-epilogue font-semibold text-[28px] text-white text-left mt-6">
           Approved charities
         </h1>
         {/* Display the approved charities */}
-        <ul>
-          {approvedCharities.map((charity) => (
-            <li key={charity.id}>
-              <div>
-                <img
-                  src={charity.imageURL} // Make sure to use the appropriate property for the image URL
-                  alt={charity.name}
-                  className="w-20 h-20 object-cover rounded-full"
-                />
-                <h3 className='text-white'>{charity.name}</h3>
-                <p>{charity.description}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
+        {approvedCharities.length > 0 ? (
+  <div className="grid grid-cols-2 gap-4">
+  {approvedCharities.map((charity) => (
+    <div key={charity.id} className="text-white">
+      <img
+        src={charity.imageURL}
+        className="w-20 h-20 object-cover rounded-full"
+      />
+      <h3 className='text-white'>{charity.name}</h3>
+      <p className='text-white'>{charity.description}</p>
+    </div>
+  ))}
+</div>
+
+) : (
+  <p className="font-epilogue font-semibold text-[12px] text-white text-left mt-6">No approved charities found.</p>
+)}
       </div>
     </div>
   );
