@@ -166,6 +166,31 @@ def get_all_beneficiaries():
                 )
 
     return response
+@app.route('/charities', methods=['GET'])
+@jwt_required
+def get_charities():
+    charities = Charity.query.filter_by(status=True).all()
+
+    if not charities:
+        return jsonify({'message': 'No active charities found.'}), 404
+
+    charity_list = [{'charity_id': charity.charity_id, 'name': charity.name} for charity in charities]
+    return jsonify({'charities': charity_list}), 200
+
+@app.route('/charities', methods=['POST'])
+def create_charity():
+    data = request.get_json()
+    name = data.get('name')
+    description = data.get('description')
+
+    if not name or not description:
+        return jsonify({'error': 'Both name and description are required.'}), 400
+
+    new_charity = Charity(name=name, description=description, status=True, amount_received=0)
+    db.session.add(new_charity)
+    db.session.commit()
+
+    return jsonify({'message': 'Charity created successfully.', 'charity_id': new_charity.charity_id}), 201
     
 
 
