@@ -191,6 +191,22 @@ def create_charity():
     db.session.commit()
 
     return jsonify({'message': 'Charity created successfully.', 'charity_id': new_charity.charity_id}), 201
+
+@app.route('/beneficiaies/<int:charity_id', methods=['GET'])
+@jwt_required
+def get_beneficiary_by_charity_id(charity_id):
+    beneficiaries = Beneficiary.query.filter_by(charity_id=charity_id).all()
+    
+
+    if not beneficiaries:
+        return jsonify({'message':'No beneficiaries for the selected charity found'}), 404
+    
+    beneficiaries_list = [beneficiary.to_dict() for beneficiary in beneficiaries]
+
+    response = make_response(jsonify({'beneficiaries':beneficiaries_list}), 
+                    200
+                    )
+    return response
     
 
 
