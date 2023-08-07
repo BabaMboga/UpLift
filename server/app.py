@@ -87,14 +87,14 @@ def login():
     if not data:
         return jsonify({'message': 'Missing JSON data in the request'}), 400
 
-    username = data.get('username')
+    email = data.get('email')
     password = data.get('password')
 
-    if not username or not password:
+    if not email or not password:
         return jsonify({'message': 'Missing username or password'}), 400
 
     # Retrieve the user from the database
-    user = User.query.filter_by(user_name=username).first()
+    user = User.query.filter_by(email=email).first()
 
     #Check if the user exists and validate the password
     if not user or not check_password_hash(user.password,password):
