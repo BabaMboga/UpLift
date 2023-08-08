@@ -41,10 +41,10 @@ const Admin = () => {
   };
 
   useEffect(() => {
-    fetch('http://localhost:4000/application')
+    fetch('http://127.0.0.1:5000/applications')
       .then((response) => response.json())
       .then((data) => setCharityApplications(data))
-      .catch((error) => console.error('Error fetching charity applications:', error));
+      .catch((error) => console.error('Error fetching charity applications:', error))
 
     fetch('http://127.0.0.1:5000/charities')
       .then((response) => response.json())

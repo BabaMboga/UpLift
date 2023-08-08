@@ -166,19 +166,19 @@ class Inventory(db.Model, SerializerMixin):
 #     author = db.Column(db.String(100), nullable=False)
 #     testimonial = db.Column(db.Text, nullable=False)
 #     charity_id = db.Column(db.Integer, db.ForeignKey('charity.id'), nullable=False)
-# class CharityApplication(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     imageURL = db.Column(db.String(500), nullable=False)
-#     name = db.Column(db.String(100), nullable=False)
-#     description = db.Column(db.String(500), nullable=False)
+class CharityApplication(db.Model, SerializerMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    imageURL = db.Column(db.String(500), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(500), nullable=False)
 
-#     def to_dict(self):
-#         return {
-#             "id": self.id,
-#             "imageURL": self.imageURL,
-#             "name": self.name,
-#             "description": self.description,
-#         }    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "imageURL": self.imageURL,
+            "name": self.name,
+            "description": self.description,
+        }    
       
       
         

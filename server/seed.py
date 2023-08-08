@@ -363,6 +363,7 @@ with app.app_context():
 ]
     charity_image_urls = {}
     
+with app.app_context():
     for _ in range(50):
         charity_name = charity_names_list.pop()
         description = generate_random_text(description_caption_corpus)
@@ -372,7 +373,7 @@ with app.app_context():
 
         new_charity = Charity(
             name=charity_name,
-            description = description,
+            description=description,  # Assign a description here
             status=status,
             amount_received=amount_received,
             image_url=image_url
@@ -381,7 +382,7 @@ with app.app_context():
         db.session.add(new_charity)
         db.session.commit()
 
-    print("Charities sucessfully seeded")
+        print("Charities successfully seeded")
 
     # creating 200 fake donations
 

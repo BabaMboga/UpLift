@@ -48,7 +48,7 @@ const CharityPage = () => {
       };
 
       // Make a POST request to the server using fetch
-      await fetch('http://localhost:4000/application', {
+      await fetch('http://127.0.0.1:5000/application', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

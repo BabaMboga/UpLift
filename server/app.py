@@ -3,7 +3,7 @@ from flask_jwt_extended import JWTManager, jwt_required, create_access_token, ge
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
 from flask_cors import CORS
-from models import db, User, Charity, Donation, Beneficiary, Inventory
+from models import db, User, Charity, Donation, Beneficiary, Inventory , CharityApplication
 import os
 
 app = Flask(__name__)
@@ -231,6 +231,34 @@ def get_inventory_for_admin():
         })
 
     return jsonify({'inventory': inventory_list}), 200
+
+
+
+@app.route('/application', methods=['POST'])
+def create_charity_application():
+    try:
+        data = request.get_json()
+        imageURL = data['imageURL']
+        name = data['name']
+        description = data['description']
+
+        application = CharityApplication(imageURL=imageURL, name=name, description=description)
+        db.session.add(application)
+        db.session.commit()
+
+        return jsonify({"message": "Charity application submitted successfully."}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+    
+    
+@app.route('/applications', methods=['GET'])
+def get_charity_applications():
+    try:
+        applications = CharityApplication.query.all()
+        application_list = [app.to_dict() for app in applications]
+        return jsonify(application_list), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400   
 
 
 
