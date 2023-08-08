@@ -8,6 +8,7 @@ const Login = () => {
   const [selectedUserType, setSelectedUserType] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
 
 // sign up states
@@ -45,38 +46,38 @@ const Login = () => {
   };
 
   const handleLogin = async () => {
-    try {
-      const response = await fetch('http://localhost:8000/allData');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+    const response = await fetch('http://127.0.0.1:5000/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      localStorage.setItem('access_token', data.access_token);
+      localStorage.setItem('user_id', data.user_id);
+      localStorage.setItem('role', data.role);
+
+      switch (data.role) {
+        case 'donor':
+          window.location.href = '/Home';
+          break;
+        case 'charity':
+          window.location.href = '/CharityPage';
+          break;
+        case 'admin':
+          window.location.href = '/admin';
+          break;
+        default:
+          break;
       }
-      const data = await response.json();
-  
-      // Extract usernames and passwords for each user type
-      const donorUsernames = data.donors.map((donor) => donor.email);
-      const donorPasswords = data.donors.map((donor) => donor.password);
-  
-      const charityUsernames = data.charities.map((charity) => charity.email);
-      const charityPasswords = data.charities.map((charity) => charity.password);
-  
-      const adminUsernames = data.admins.map((admin) => admin.email);
-      const adminPasswords = data.admins.map((admin) => admin.password);
-  
-      // Perform your authentication check here for each user type
-      if (donorUsernames.includes(email) && donorPasswords.includes(password)) {
-        window.location.href = '/Home'; // Redirect donors to their dashboard
-      } else if (charityUsernames.includes(email) && charityPasswords.includes(password)) {
-        window.location.href = '/CharityPage'; // Redirect charities to their dashboard
-      } else if (adminUsernames.includes(email) && adminPasswords.includes(password)) {
-        window.location.href = '/admin'; // Redirect admins to their dashboard
-      } else {
-        alert('Invalid username or password');
-      }
-    } catch (error) {
-      console.error('Error fetching login details:', error);
+    } else {
+      setErrorMessage(data.message); // Display error message
     }
   };
-
   const handleLoginClick = () => {
     setIsModalOpen(true);
   };

@@ -17,7 +17,7 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
 # jwt = JWTManager(app)
 
-CORS(app, resources={r"/*": {"origins":"*"}})
+CORS(app)
 
 migrate = Migrate(app,db)
 db.init_app(app)
@@ -78,29 +78,27 @@ def signup():
 
     return jsonify({'message': 'User created successfully'}), 201
 
-@app.route('/login',endpoint="login",methods=['POST'])
+@app.route('/login', endpoint="login", methods=['POST'])
 def login():
     data = request.get_json()
-    if not data:
-        return jsonify({'message': 'Missing JSON data in the request'}), 400
-
     email = data.get('email')
     password = data.get('password')
-
-    if not email or not password:
-        return jsonify({'message': 'Missing username or password'}), 400
-
-    # Retrieve the user from the database
+    
     user = User.query.filter_by(email=email).first()
-
-    #Check if the user exists and validate the password
-    if not user or not check_password_hash(user.password,password):
-        return jsonify({'message':'Invalid username or password'}), 401
-
-    # Generate an access token for the authenticated user
-    access_token = create_access_token(identity=user.id)
-
-    return jsonify({'access_token': access_token}), 200
+    
+    if user and user.password == password:
+        if user.role == 'donor' or user.role == 'charity' or user.role == 'admin':
+            access_token = create_access_token(identity=user.id)  # Assuming your user ID field is named 'id'
+            return jsonify({
+                'message': 'Login successful',
+                'access_token': access_token,
+                'user_id': user.id,
+                'role': user.role
+            })
+        else:
+            return jsonify({'message': 'Invalid user role'}), 403
+    else:
+        return jsonify({'message': 'Invalid credentials'}), 401
 
 
 @app.route('/admin/beneficiaries',endpoint="get_beneficiaries", methods=['GET'])

@@ -147,7 +147,7 @@ with app.app_context():
         while num_donors < 20:            
             email = fake.email(domain=random.choice(valid_email_domains))
             password = fake.password()
-            username = fake.user_name()
+          
 
              #Validate email format
             if '@' not in email or '.' not in email:
@@ -162,22 +162,21 @@ with app.app_context():
                 email = email,
                 password = hashed_password,
                 role='donor',
-                user_name=username,
-                official_name=fake.name()
+                
             )
 
             db.session.add(new_user)
             db.session.commit()
 
             # Write the user and password details to the text file
-            file.write(f"User: {username}, Email: {email}, Password: {password}, Role: {new_user.role}\n")
+            file.write(f"User:  Email: {email}, Password: {password}, Role: {new_user.role}\n")
 
             num_donors += 1
 
         while num_admins< 10:
             email = fake.email(domain=random.choice(valid_email_domains))
             password = fake.password()
-            username = fake.user_name()
+          
 
              #Validate email format
             if '@' not in email or '.' not in email:
@@ -191,24 +190,22 @@ with app.app_context():
             new_user = User(
                 email = email,
                 password = hashed_password,
-                role='admin',
-                user_name=username,
-                official_name=fake.name()
+                role='admin'
+               
             )
 
             db.session.add(new_user)
             db.session.commit()
 
             # Write the user and password details to the text file
-            file.write(f"User: {username}, Email: {email}, Password: {password}, Role: {new_user.role}\n")
+            file.write(f"User:  Email: {email}, Password: {password}, Role: {new_user.role}\n")
 
             num_admins += 1
 
         for charity_name in  charity_names_list:
             email = fake.email(domain=random.choice(valid_email_domains))
             password = fake.password()
-            username = fake.user_name()
-
+           
              #Validate email format
             if '@' not in email or '.' not in email:
                 continue
@@ -222,15 +219,14 @@ with app.app_context():
                 email = email,
                 password = hashed_password,
                 role='charity',
-                user_name=username,
-                official_name=charity_name
+               
             )
 
             db.session.add(new_user)
             db.session.commit()
 
             # Write the user and password details to the text file
-            file.write(f"User: {username}, Email: {email}, Password: {password}, Role: {new_user.role}\n")
+            file.write(f"User:  Email: {email}, Password: {password}, Role: {new_user.role}\n")
 
             
 
@@ -366,14 +362,14 @@ with app.app_context():
 with app.app_context():
     for _ in range(50):
         charity_name = charity_names_list.pop()
-        description = generate_random_text(description_caption_corpus)
+        description = generate_random_text(description_caption_corpus)  # Ensure a description is generated
         status = random.choice([True, False])
         amount_received = random.randint(1000, 1000000)
         image_url = random.choice(image_urls_list)
 
         new_charity = Charity(
             name=charity_name,
-            description=description,  # Assign a description here
+            description=description,  # Ensure you're providing a valid description
             status=status,
             amount_received=amount_received,
             image_url=image_url

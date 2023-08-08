@@ -10,40 +10,33 @@ class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
     
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String, nullable=False, unique = True)
-    password = db.Column(db.String, nullable = False, )
+    email = db.Column(db.String, nullable=False, unique=True)
+    password = db.Column(db.String, nullable=False)
     role = db.Column(db.String, nullable=False)
-    user_name = db.Column(db.String, nullable=False)
-    official_name = db.Column(db.String, nullable=False)
-    
 
     donations = db.relationship('Donation', backref='donor')
 
     serialize_rules = ("-donation.user")
 
-# Validate the email address
     @db.validates('email')
-    def validate_email(self,key,email):
+    def validate_email(self, key, email):
         try:
             valid_email = validate_email(email)
             return valid_email.email
         except EmailNotValidError as e:
             raise ValueError(f"Invalid email address: {e}")
 
-
     def __repr__(self):
-        return f'User: {self.user_name}, ID: {self.id}, Role: {self.role}'
+        return f'User: ID: {self.id}, Role: {self.role}'
     
     def to_dict(self):
         return {
-            'id' : self.id,
-            'email' :self.email,
+            'id': self.id,
+            'email': self.email,
             'password': self.password,
-            'role': self.role,
-            'user_name': self.user_name,
-            'official_name': self.official_name_name
-            
+            'role': self.role
         }
+
 
 class Charity(db.Model, SerializerMixin):
     __tablename__ = 'charities'

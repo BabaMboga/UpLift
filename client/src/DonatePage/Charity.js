@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
+import Search from './Search';
 
 // Modal.setAppElement('#root');
 
@@ -16,6 +17,9 @@ function Charity() {
   const [setReminder, setSetReminder] = useState(false);
   const [paymentOption, setPaymentOption] = useState('');
 
+const handleSearchResults = (results) => {
+    setCharities(results);
+  };
 
 
   useEffect(() => {
@@ -56,7 +60,9 @@ function Charity() {
     <h1 className='font-epilogue font-semibold text-[28px] text-white text-left mt-6'>All Charities ({charities.length})
     </h1>
 
-    <div className='flex flex-wrap mt-[20px] gap-[260x]'>
+    <Search charities={charities} onSearchResults={handleSearchResults} />
+
+    <div className='flex flex-wrap mt-[30px] gap-[260x]'>
     {charities.map((charity) => (
       <div className='sm:w-[288px] w-full rounded-[15px] bg-[#1c1c24] cursor-pointer  mb-[30px] ml-[20px]'>
          <img src={charity.image_url} className='w-full h-[158px] object-cover rounded-[15px] truncate'/>
