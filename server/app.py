@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 from models import db, User, Charity, Donation, Beneficiary, Inventory , CharityApplication
 import os
+from sqlalchemy.orm import Session
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key')
@@ -14,18 +15,14 @@ app.config['JWT_SECRET_KEY'] = 'your-jwt-secret-key'  # Change this to a strong 
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
 
-jwt = JWTManager(app)
-#allows all origins and should be changed after development
+# jwt = JWTManager(app)
+
 CORS(app, resources={r"/*": {"origins":"*"}})
-#when in production
-#CORS(app, resources={r"/*": {"origins": "https://your_trusted-frontend-domain.com"}})
+
 migrate = Migrate(app,db)
 db.init_app(app)
 
-# Manually create the application context
-# with app.app_context():
-    # Create the database tables (Since we removed User table, we don't need this anymore)
-    # db.create_all()
+
 
 @app.route('/', endpoint="index")
 def index():
@@ -105,45 +102,7 @@ def login():
 
     return jsonify({'access_token': access_token}), 200
 
-@app.route('/admins/<int:charity_id>',endpoint="approve_delete_charity", methods=['POST'])
-@jwt_required #Return a valid JWT token to access this endpoint
-def approve_delete_charity(charity_id):
-    #Get the authenticated user's identity from the JWT token
-    current_user_id = get_jwt_identity()
 
-    #Retrieve the user from the database
-    user = User.query.get(current_user_id)
-
-    #Check if the user is an 'admin'
-    if user.role != 'admin':
-        return jsonify({'message': 'Unauthorized access'}), 403
-    
-    #Retrieve the charity from the database
-    charity = Charity.query.get(charity_id)
-
-    #Check if the charity exists
-    if not charity:
-        return jsonify({'message': 'Charity not found'}), 404
-    
-    #perform the actions based on the request data
-    data = request.get_json()
-    if not data:
-        return jsonify({'message': 'Missing JSON data in the request'}), 400
-    
-    action = data.get('action')
-
-    if action =='approve':
-        
-        charity.status = True
-        db.session.commit()
-        return jsonify({'message': 'Charity approved successfully'}), 200
-    elif action == 'delete':
-        db.session.delete(charity)
-        db.session.commit()
-        return jsonify({'message': 'Charity deleted successfully'}), 200
-    else:
-        return jsonify({'message':'Invalid action'}), 400
-    
 @app.route('/admin/beneficiaries',endpoint="get_beneficiaries", methods=['GET'])
 @jwt_required
 def get_beneficiaries():
@@ -188,20 +147,36 @@ def get_charities():
     return jsonify({'charities': charity_list}), 200
 
 
-@app.route('/charities',endpoint="create_charity", methods=['POST'])
-def create_charity():
-    data = request.get_json()
-    name = data.get('name')
-    description = data.get('description')
+@app.route('/api/charities/<int:charity_id>', methods=['DELETE'])
+def delete_charity(charity_id):
+    try:
+        print("Deleting charity with ID:", charity_id)
+        
+        charity = Charity.query.filter_by(charity_id=charity_id).first()
 
-    if not name or not description:
-        return jsonify({'error': 'Both name and description are required.'}), 400
+        if not charity:
+            print("Charity not found.")
+            return jsonify({'message': 'Charity not found.'}), 404
+        
+        db.session.delete(charity)
+        db.session.commit()
+        
+        print("Charity deleted successfully.")
+        return jsonify({'message': 'Charity deleted successfully.'}), 200
+    except Exception as e:
+        db.session.rollback()
+        print("Error:", e)
+        return jsonify({'message': 'Failed to delete charity.', 'error': str(e)}), 500
 
-    new_charity = Charity(name=name, description=description, status=True, amount_received=0)
-    db.session.add(new_charity)
-    db.session.commit()
 
-    return jsonify({'message': 'Charity created successfully.', 'charity_id': new_charity.charity_id}), 201
+
+
+
+
+
+
+
+
 
 @app.route('/beneficiaries/stories', endpoint="beneficiaries_stories", methods=['GET'])
 # @jwt_required
@@ -263,11 +238,6 @@ def get_charity_applications():
 
 
 
-# @app.route('/protected_route')
-# @jwt_required
-# def protected_route():
-#     # Your code here
-#     return 'Protected route response'
     
     
     

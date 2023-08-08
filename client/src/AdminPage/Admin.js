@@ -63,18 +63,26 @@ const Admin = () => {
     localStorage.setItem('approvedCharities', JSON.stringify(approvedCharities));
   }, [approvedCharities]);
 
-  const handleDeleteCharity = (charityId) => {
-    fetch(`http://localhost:5000/charities/${charityId}`, {
+
+  const handleDelete = (charityId) => {
+    fetch(`http://127.0.0.1:5000/api/charities/${charityId}`, {
       method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        // You might need to include authentication headers if your API requires them
+      },
     })
       .then((response) => response.json())
-      .then(() => {
-        // Update the state to remove the deleted charity from the list
+      .then((data) => {
+        console.log(data); // You can customize this based on your needs
+        // Remove the deleted charity from the list
         setCharities((prevCharities) =>
-          prevCharities.filter((charity) => charity.id !== charityId)
+          prevCharities.filter((charity) => charity.charity_id !== charityId)
         );
       })
-      .catch((error) => console.error('Error deleting charity:', error));
+      .catch((error) => {
+        console.error('Error deleting charity:', error);
+      });
   };
 
   return (
@@ -166,11 +174,11 @@ const Admin = () => {
       />
       <span>{charity.name}</span>
       <button
-        onClick={() => handleDeleteCharity(charity.id)}
-        className="ml-2 bg-red-500 text-white px-4 py-1 rounded"
-      >
-        Delete
-      </button>
+ onClick={() => handleDelete(charity.charity_id)}// Use charity.charity_id
+  className="ml-2 bg-red-500 text-white px-4 py-1 rounded"
+>
+  Delete
+</button>
     </div>
   ))}
 </div>

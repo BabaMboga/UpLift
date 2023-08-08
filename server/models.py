@@ -55,9 +55,9 @@ class Charity(db.Model, SerializerMixin):
     amount_received = db.Column(db.Integer)
     image_url = db.Column(db.String)  # Add the imageUrl attribute
 
-    beneficiaries = db.relationship('Beneficiary', backref='charity')
-    donations = db.relationship('Donation', backref='charity')
-    inventory = db.relationship('Inventory', backref='charity')
+    beneficiaries = db.relationship('Beneficiary', backref='charity', cascade='all, delete-orphan')
+    donations = db.relationship('Donation', backref='charity', cascade='all, delete-orphan')
+    inventory = db.relationship('Inventory', backref='charity', cascade='all, delete-orphan')
 
     serialize_rules = ("-beneficiaries.charity", "-donations.charity", "-inventory.charity")
 
