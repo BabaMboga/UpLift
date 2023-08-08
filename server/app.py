@@ -166,16 +166,27 @@ def get_beneficiaries():
 
     return response
 
-@app.route('/charities',endpoint="get_charities", methods=['GET'])
-@jwt_required
+@app.route('/charities', endpoint="get_charities", methods=['GET'])
+# @jwt_required
 def get_charities():
     charities = Charity.query.filter_by(status=True).all()
 
     if not charities:
         return jsonify({'message': 'No active charities found.'}), 404
 
-    charity_list = [{'charity_id': charity.charity_id, 'name': charity.name} for charity in charities]
+    charity_list = [
+        {
+            'charity_id': charity.charity_id,
+            'name': charity.name,
+            'description': charity.description,
+            'amount_received': charity.amount_received,
+            'image_url': charity.image_url  # Include the image_url field
+        }
+        for charity in charities
+    ]
+    
     return jsonify({'charities': charity_list}), 200
+
 
 @app.route('/charities',endpoint="create_charity", methods=['POST'])
 def create_charity():
@@ -192,52 +203,43 @@ def create_charity():
 
     return jsonify({'message': 'Charity created successfully.', 'charity_id': new_charity.charity_id}), 201
 
-@app.route('/beneficiaries/<int:charity_id>',endpoint="get_beneficiary_by_charity_id", methods=['GET'])
-@jwt_required
-def get_beneficiary_by_charity_id(charity_id):
-    beneficiaries = Beneficiary.query.filter_by(charity_id=charity_id).all()
-    
-
-    if not beneficiaries:
-        return jsonify({'message':'No beneficiaries for the selected charity found'}), 404
-    
-    beneficiaries_list = [beneficiary.to_dict() for beneficiary in beneficiaries]
-
-    response = make_response(jsonify({'beneficiaries':beneficiaries_list}), 
-                    200
-                    )
-    return response
-
-# @app.route('/admin/beneficiaries', methods=['GET'])
+@app.route('/beneficiaries/stories', endpoint="beneficiaries_stories", methods=['GET'])
 # @jwt_required
-# def get_all_beneficiaries_for_admin():
-#     beneficiaries_list = []
+def get_beneficiaries_stories():
+    beneficiaries = Beneficiary.query.all()
+    beneficiaries_list = [{
+        'beneficiary_id': beneficiary.beneficiary_id,
+        'charity_id': beneficiary.charity_id,
+        'beneficiary_name': beneficiary.beneficiary_name,
+        'story': beneficiary.story
+    } for beneficiary in beneficiaries]
 
-#     for beneficiary in Beneficiary.query.all():
-#         beneficiaries_list.append({
-#             'beneficiary_id': beneficiary.beneficiary_id,
-#             'charity_id': beneficiary.charity_id,
-#             'beneficiary_name': beneficiary.beneficiary_name,
-#             'story': beneficiary.story
-#         })
+    return jsonify({'beneficiaries': beneficiaries_list}), 200
 
-#     return jsonify({'beneficiaries': beneficiaries_list}), 200
-
-@app.route('/admin/inventory',endpoint='get_inventory_for_admin', methods=['GET'])
-@jwt_required
+# API endpoint to get inventory for admin
+@app.route('/admin/inventory', endpoint="inventory" ,methods=['GET'])
+# @jwt_required
 def get_inventory_for_admin():
     inventory_list = []
-
     for inventory_item in Inventory.query.all():
         inventory_list.append({
             'inventory_id': inventory_item.inventory_id,
             'charity_id': inventory_item.charity_id,
             'item_name': inventory_item.item_name,
             'quantity': inventory_item.quantity,
-            'date_sent': inventory_item.date_sent
+            'date_sent': inventory_item.date_sent.strftime('%Y-%m-%d %H:%M:%S')
         })
 
     return jsonify({'inventory': inventory_list}), 200
+
+
+
+
+# @app.route('/protected_route')
+# @jwt_required
+# def protected_route():
+#     # Your code here
+#     return 'Protected route response'
     
     
     

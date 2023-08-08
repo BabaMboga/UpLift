@@ -1,8 +1,8 @@
-"""Create tables users, charities, donations, beneficiaries,inventory
+"""empty message
 
-Revision ID: 5b7bdc370ab6
+Revision ID: 760387c01f6f
 Revises: 
-Create Date: 2023-08-03 08:19:51.252031
+Create Date: 2023-08-08 00:10:17.442792
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '5b7bdc370ab6'
+revision = '760387c01f6f'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,6 +24,7 @@ def upgrade():
     sa.Column('description', sa.String(), nullable=False),
     sa.Column('status', sa.Boolean(), nullable=False),
     sa.Column('amount_received', sa.Integer(), nullable=True),
+    sa.Column('image_url', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('charity_id')
     )
     op.create_table('users',

@@ -20,9 +20,9 @@ function Charity() {
 
   useEffect(() => {
     // Fetch the JSON data using the fetch function
-    fetch('http://localhost:5000/charities')
+    fetch('http://127.0.0.1:5000/charities')
       .then((response) => response.json())
-      .then((data) => setCharities(data)) // Assuming the API returns an array of charities directly
+      .then((data) => setCharities(data.charities)) // Assuming the API returns an array of charities directly
       .catch((error) => console.error('Error fetching data:', error));
   }, []);
 
@@ -59,24 +59,19 @@ function Charity() {
     <div className='flex flex-wrap mt-[20px] gap-[260x]'>
     {charities.map((charity) => (
       <div className='sm:w-[288px] w-full rounded-[15px] bg-[#1c1c24] cursor-pointer  mb-[30px] ml-[20px]'>
-         <img src={charity.logo} className='w-full h-[158px] object-cover rounded-[15px]'/>
+         <img src={charity.image_url} className='w-full h-[158px] object-cover rounded-[15px] truncate'/>
          <div className='flex flex-col p-4'>
-          <div className='flex flex-row items-center mb-[18px]'>
-<h1 className=''>Total Donation</h1>
-<p className='ml-[12px] mt-[6px] font-epilogue font-medium text-[18px] text-white'>${charity.total_amount_donated}</p>
-         </div>
          <div className='block'>
           <h3 className='font-epilogue font-semibold text-[19px] text-left leading-[26px] '>{charity.name}</h3>
-          <ul className='mt-4'>
-              {charity.testimonials.map((testimonial, index) => (
-                <li key={index}>
-                  <strong className='text-[#808191] '>{testimonial.author}</strong>:
-                   <p className='mt-[px] font-epilogue font-normal  text-[#808191] text-left leading-[18px] truncate'>
-                    {testimonial.testimonial}</p>
-                </li>
-              ))}
-            </ul>
          </div>
+
+          <div className='flex flex-row items-center mb-[18px] mt-4'>
+            
+<h1 className=''>Total Donation</h1>
+<p className='ml-[12px] mt-[6px] font-epilogue font-medium text-[14px] text-white'>${charity.amount_received}</p>
+         </div>
+
+        
 
          <div
           onClick={() => handleDonateClick(charity)}

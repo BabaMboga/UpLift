@@ -144,7 +144,7 @@ with app.app_context():
     valid_email_domains = ["gmail.com", "yahoo.com","hotmail.com"]
 
     with open('user_credentials.txt', 'w') as file:
-        while num_donors < 140:            
+        while num_donors < 20:            
             email = fake.email(domain=random.choice(valid_email_domains))
             password = fake.password()
             username = fake.user_name()
@@ -341,18 +341,41 @@ with app.app_context():
     """
 
     print("Users Successfully seeded")
-
+    
+    image_urls_list = [
+    "https://images.unsplash.com/photo-1690758492063-0e2392a15bd1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0fHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60",
+    
+    "https://plus.unsplash.com/premium_photo-1661964417866-a459012e0e10?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YmVhdXRpZnVsJTIwYmxhY2slMjB3b21hbnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+    
+    "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2hhcml0eXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+    
+    "https://plus.unsplash.com/premium_photo-1664303232497-69fd12425fe1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw4fHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60",
+    
+    "https://images.unsplash.com/photo-1687360440984-3a0d7cfde903?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60",
+    
+    
+    "https://images.unsplash.com/photo-1687360440984-3a0d7cfde903?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60",
+    
+    
+    "https://images.unsplash.com/photo-1687360440984-3a0d7cfde903?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60",
+      
+    # Add more image URLs here...
+]
+    charity_image_urls = {}
+    
     for _ in range(50):
         charity_name = charity_names_list.pop()
         description = generate_random_text(description_caption_corpus)
         status = random.choice([True, False])
         amount_received = random.randint(1000, 1000000)
+        image_url = random.choice(image_urls_list)
 
         new_charity = Charity(
             name=charity_name,
             description = description,
             status=status,
-            amount_received=amount_received
+            amount_received=amount_received,
+            image_url=image_url
         )
 
         db.session.add(new_charity)
@@ -364,7 +387,7 @@ with app.app_context():
 
     users = User.query.filter_by(role='donor').all()
     charities = Charity.query.filter_by(status = True).all()
-    for _ in range(200):
+    for _ in range(20):
         donor = random.choice(users)
         charity = random.choice(charities)
         donation = Donation(
@@ -394,55 +417,60 @@ with app.app_context():
 
     print("Donations successfully seeded")
 
-    # Create 200 beneficiaries
-    for _ in range(200):
-        charity= random.choice(charities)
+    inventory_items = [
+    "Rice", "Beans", "Canned goods", "Flour", "Cooking oil", "Pasta", "Soap", "Shampoo", "Toothpaste", "Toothbrushes",
+    "Sanitary pads", "Diapers", "T-shirts", "Pants", "Shoes", "Blankets", "Bed sheets", "School bags", "Notebooks",
+    "Pens and pencils", "Stationery items", "First aid kits", "Bandages", "Over-the-counter medicines", "Water filters",
+    "Water purification tablets", "Cooking utensils", "Plates and cutlery", "Cooking stoves", "Solar-powered lights",
+    "Mobile phones", "Chickens", "Goats", "Seeds", "Computers", "Projectors", "Books and educational materials",
+    "Mosquito nets", "Sleeping mats", "Flashlights", "Batteries", "Sewing machines", "Clothing fabric", "Raincoats",
+    "Solar panels", "Hand tools", "Sewing supplies", "Farming tools", "Vegetable seeds", "Educational toys"
+]
+
+# ... (Your code for creating beneficiaries remains the same)
+
+# Create 100 inventory entries
+with app.app_context():
+    # Create beneficiaries
+    for _ in range(20):
+        random_charity = random.choice(charities)  # Fetch a random charity from the database
+
+        # Ensure the charity is attached to the active session
+        random_charity = db.session.merge(random_charity)
+
         beneficiary = Beneficiary(
-            charity_id = charity.charity_id,
-            beneficiary_name = fake.name(),
-            story = generate_random_text(story_caption_corpus)
+            charity_id=random_charity.charity_id,
+            beneficiary_name=random_charity.name,  # Inherit the name from the Charity
+            story=generate_random_text(story_caption_corpus)
         )
         db.session.add(beneficiary)
-        db.session.commit()
 
-    print("Benefeciaries successfully seeded")
+    db.session.commit()
+    print("Beneficiaries successfully seeded")
 
-    #create 100 inventory entries
+    # Create 100 inventory entries
+    for _ in range(20):
+        random_charity = random.choice(charities)  # Fetch a random charity from the database
 
-    #list of inventory items
-    inventory_items = [
-        "Rice", "Beans", "Canned goods", "Flour", "Cooking oil", "Pasta", "Soap", "Shampoo", "Toothpaste", "Toothbrushes",
-        "Sanitary pads", "Diapers", "T-shirts", "Pants", "Shoes", "Blankets", "Bed sheets", "School bags", "Notebooks",
-        "Pens and pencils", "Stationery items", "First aid kits", "Bandages", "Over-the-counter medicines", "Water filters",
-        "Water purification tablets", "Cooking utensils", "Plates and cutlery", "Cooking stoves", "Solar-powered lights",
-        "Mobile phones", "Chickens", "Goats", "Seeds", "Computers", "Projectors", "Books and educational materials",
-        "Mosquito nets", "Sleeping mats", "Flashlights", "Batteries", "Sewing machines", "Clothing fabric", "Raincoats",
-        "Solar panels", "Hand tools", "Sewing supplies", "Farming tools", "Vegetable seeds", "Educational toys"
-    ]
+        # Ensure the charity is attached to the active session
+        random_charity = db.session.merge(random_charity)
 
-    for _ in range(100):
-        charity = random.choice(charities)
         item_name = random.choice(inventory_items)
         quantity = random.randint(1, 100)
         date_sent = fake.date_time_this_year()
 
         inventory = Inventory(
-            charity_id = charity.charity_id,
-            item_name = item_name,
-            quantity = quantity,
-            date_sent = date_sent
+            charity_id=random_charity.charity_id,
+            item_name=item_name,
+            quantity=quantity,
+            date_sent=date_sent
         )
 
         db.session.add(inventory)
-        db.session.commit()
 
+    db.session.commit()
     print("Inventories successfully seeded")
     print("Finished seeding")
-    
-    
-    
-    
-    
     
     
     # def seed_data():

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const CharityPage = () => {
@@ -6,6 +6,38 @@ const CharityPage = () => {
   const [imageURL, setImageURL] = useState('');
   const [charityName, setCharityName] = useState('');
   const [charityDescription, setCharityDescription] = useState('');
+  const [beneficiaries, setBeneficiaries] = useState([]);
+  const [inventory, setInventory] = useState([]);
+
+  useEffect(() => {
+    // Fetch JWT token from localStorage (if stored after login)
+    const jwtToken = localStorage.getItem('jwtToken');
+
+    // Fetch beneficiaries from the Flask backend with JWT token
+    fetch('http://127.0.0.1:5000/beneficiaries/stories', {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`, // Include JWT token in the headers
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setBeneficiaries(data.beneficiaries))
+      .catch((error) => {
+        console.error('Error fetching beneficiaries:', error);
+      });
+
+    // Fetch inventory from the Flask backend with JWT token
+    fetch('http://127.0.0.1:5000/admin/inventory', {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`, // Include JWT token in the headers
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setInventory(data.inventory))
+      .catch((error) => {
+        console.error('Error fetching inventory:', error);
+      });
+  }, []);
+
 
   const handleSubmit = async () => {
     try {
@@ -60,16 +92,34 @@ const CharityPage = () => {
 {/* 
       <h1 className="text-white font-epilogue font-bold">charity page</h1> */}
 
-      <h1 className="font-epilogue font-semibold text-[28px] text-white text-left mt-6">
+<div className="container mx-auto p-8 font-epilogue">
+      <h1 className="font-epilogue font-semibold text-2xl text-white mt-6">
         Beneficiaries Stories
       </h1>
+      <div className="grid grid-cols-3 gap-4 mt-6">
+        {beneficiaries.map((beneficiary) => (
+          <div key={beneficiary.beneficiary_id} className='sm:w-[288px] w-full rounded-[15px] bg-[#1c1c24] cursor-pointer  mb-[30px] ml-[20px]'>
+            <h2 className="font-epilogue font-semibold text-lg text-gray-200">
+              {beneficiary.beneficiary_name}
+            </h2>
+            <p className="text-gray-500">{beneficiary.story}</p>
+          </div>
+        ))}
+      </div>
 
-      
-
-      <h1 className="font-epilogue font-semibold text-[28px] text-white text-left mt-6">
-      Inventory sent to the beneficiaries
-
+      <h1 className="font-epilogue font-semibold text-2xl text-white mt-12">
+        Inventory sent to the beneficiaries
       </h1>
+      <div className="grid grid-cols-3 gap-4 mt-6">
+        {inventory.map((item) => (
+          <div key={item.inventory_id} className="bg-white rounded-lg p-4 shadow-md">
+            <h2 className="font-epilogue font-semibold text-lg text-gray-800">{item.item_name}</h2>
+            <p className="text-gray-600">Quantity: {item.quantity}</p>
+            <p className="text-gray-600">Date Sent: {item.date_sent}</p>
+          </div>
+        ))}
+      </div>
+    </div>
 
       {/* Modal */}
       {isModalOpen && (

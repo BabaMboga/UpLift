@@ -46,9 +46,9 @@ const Admin = () => {
       .then((data) => setCharityApplications(data))
       .catch((error) => console.error('Error fetching charity applications:', error));
 
-    fetch('http://localhost:5000/charities')
+    fetch('http://127.0.0.1:5000/charities')
       .then((response) => response.json())
-      .then((data) => setCharities(data))
+      .then((data) => setCharities(data.charities))
       .catch((error) => console.error('Error fetching charities:', error));
 
     // Retrieve approved charities from local storage on page load
@@ -160,7 +160,7 @@ const Admin = () => {
   {charities.map((charity) => (
     <div key={charity.id} className="text-white font-epilogue font-semibold flex items-center space-x-4">
       <img
-        src={charity.logo}
+        src={charity.image_url}
         alt={charity.name}
         className="w-20 h-20 object-cover rounded-full"
       />

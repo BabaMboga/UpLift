@@ -53,6 +53,7 @@ class Charity(db.Model, SerializerMixin):
     description = db.Column(db.String, nullable=False)
     status = db.Column(db.Boolean, nullable=False)
     amount_received = db.Column(db.Integer)
+    image_url = db.Column(db.String)  # Add the imageUrl attribute
 
     beneficiaries = db.relationship('Beneficiary', backref='charity')
     donations = db.relationship('Donation', backref='charity')
@@ -62,15 +63,17 @@ class Charity(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'Name: {self.name} of ID: {self.charity_id} has received {self.amount_received}'
-    
+
     def to_dict(self):
         return {
-            'charity_id':self.charity_id,
+            'charity_id': self.charity_id,
             'name': self.name,
-            'description':self.description,
+            'description': self.description,
             'status': self.status,
-            'amount_received':self.amount_received
+            'amount_received': self.amount_received,
+            'image_url': self.image_url  # Include the imageUrl in the dictionary
         }
+
 
 class Donation(db.Model, SerializerMixin):
     __tablename__ = 'donations'
@@ -121,14 +124,13 @@ class Beneficiary(db.Model, SerializerMixin):
     
     def to_dict(self):
         return {
-            'beneficiary_id':self.beneficiary_id,
-            'charity_id':self.charity_id,
-            'beneficiary_name':self.beneficiary_name,
+            'beneficiary_id': self.beneficiary_id,
+            'charity_id': self.charity_id,
+            'beneficiary_name': self.beneficiary_name,
             'story': self.story
         }
 
-    
-
+# Inventory Model
 class Inventory(db.Model, SerializerMixin):
     __tablename__ = 'inventory'
 
@@ -146,13 +148,11 @@ class Inventory(db.Model, SerializerMixin):
     def to_dict(self):
         return {
             'inventory_id': self.inventory_id,
-            'charity_id':self.charity_id,
-            'item_name':self.item_name,
-            'quantity':self.quantity,
-            'date_sent':self.date_sent 
-            
+            'charity_id': self.charity_id,
+            'item_name': self.item_name,
+            'quantity': self.quantity,
+            'date_sent': self.date_sent.strftime('%Y-%m-%d %H:%M:%S')
         }
-        
         
 # class Charity(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
