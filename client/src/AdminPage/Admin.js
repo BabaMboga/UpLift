@@ -196,6 +196,7 @@ const Admin = () => {
       <img
         src={charity.imageURL}
         className="w-20 h-20 object-cover rounded-full"
+        alt=''
       />
       <h3 className='text-white'>{charity.name}</h3>
       <p className='text-white'>{charity.description}</p>

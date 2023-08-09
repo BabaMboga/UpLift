@@ -8,7 +8,7 @@ const Login = () => {
   const [selectedUserType, setSelectedUserType] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [ setErrorMessage] = useState('');
 
 
 // sign up states

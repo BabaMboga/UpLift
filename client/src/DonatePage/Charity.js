@@ -65,7 +65,7 @@ const handleSearchResults = (results) => {
     <div className='flex flex-wrap mt-[30px] gap-[260x]'>
     {charities.map((charity) => (
       <div className='sm:w-[288px] w-full rounded-[15px] bg-[#1c1c24] cursor-pointer  mb-[30px] ml-[20px]'>
-         <img src={charity.image_url} className='w-full h-[158px] object-cover rounded-[15px] truncate'/>
+         <img src={charity.image_url} alt="" className='w-full h-[158px] object-cover rounded-[15px] truncate'/>
          <div className='flex flex-col p-4'>
          <div className='block'>
           <h3 className='font-epilogue font-semibold text-[19px] text-left leading-[26px] '>{charity.name}</h3>
@@ -171,6 +171,8 @@ const handleSearchResults = (results) => {
           <option value="credit-card">Credit Card</option>
           <option value="paypal">PayPal</option>
           <option value="bitcoin">Bitcoin</option>
+          <option value="worldcoin">WorldCoin</option>
+
         </select>
 
         <button
