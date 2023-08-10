@@ -1,4 +1,6 @@
-# UpLift: 
+![My Image](/resources/logo.png)
+
+# UpLift: Elevate Lives Illuminate Dreams
 
 #### This MVP showcases an automated donation platform that serves an admin, a charity and a donor for a pleasing user experience while donating or viewing a charity of their choice.(version 3.10.08.2023), 08/10/2023
 
@@ -37,7 +39,7 @@ We believe in transparency. Charities can provide detailed reports on how the fu
 
 ## Demo
 
-![My Image](/resources/Screenshot-2023-08-10-1.pn)
+![My Image](/resources/Screenshot-2023-08-10-1.png)
 
 ![My Image](/resources/Screenshot-2023-08-10-2.png)
 
@@ -95,6 +97,7 @@ For any issues, questions, suggestions or contributions please email any of us o
 
 odhisayim@gmail.com
 luvegaronny@gmail.com
+kimanicollin@gmail.com
 
 ## License
 
