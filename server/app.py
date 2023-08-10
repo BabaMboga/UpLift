@@ -7,6 +7,9 @@ from models import db, User, Charity, Donation, Beneficiary, Inventory , Charity
 import os
 from sqlalchemy.orm import Session
 import paypalrestsdk
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+  
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///uplift.db'
@@ -86,6 +89,30 @@ def protected_route():
     user_id = get_jwt_identity()
     # Now you can use the user_id to retrieve user-specific information
     return jsonify({'message': 'You have access to this protected route.', 'user_id': user_id})
+
+
+#sendgrid routes
+@app.route('/send-reminder-email', methods=['POST'])
+def send_reminder_email():
+    data = request.json
+    email = data.get('email')
+    subject = "Monthly Donation Reminder"
+    body = "This is a friendly reminder to make your monthly donation. Thank you for your support!"
+
+    try:
+        message = Mail(
+            from_email='your_email@example.com',  # Set your SendGrid verified email address
+            to_emails=email,
+            subject=subject,
+            plain_text_content=body
+        )
+        sg = SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+        response = sg.send(message)
+        return jsonify({'message': 'Reminder email sent successfully.'}), 200
+    except Exception as e:
+        return jsonify({'error': 'Failed to send reminder email.', 'details': str(e)}), 500
+
+
 
 @app.route('/admin/beneficiaries',endpoint="get_beneficiaries", methods=['GET'])
 # @jwt_required
