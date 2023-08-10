@@ -98,6 +98,7 @@ For any issues, questions, suggestions or contributions please email any of us o
 odhisayim@gmail.com
 luvegaronny@gmail.com
 kimanicollin@gmail.com
+wordsayyy@gmail.com
 
 ## License
 
