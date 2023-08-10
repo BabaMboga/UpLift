@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, make_response
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity ,verify_jwt_in_request
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -51,7 +51,6 @@ def signup():
         return jsonify({'error': 'An error occurred while signing up.'}), 500
 
 @app.route('/login', endpoint="login", methods=['POST'])
-# @jwt_required()
 def login():
     data = request.get_json()
     email = data.get('email')
@@ -64,7 +63,7 @@ def login():
     if user and user.password == password:
         if user.role == 'donor' or user.role == 'charity' or user.role == 'admin':
             access_token = create_access_token(identity=user.id)  # Assuming your user ID field is named 'id'
-            print("User ID in token:", get_jwt_identity())  # Debug print inside the context
+            print("Access Token:", access_token)  # Debug print the access token
             return jsonify({
                 'message': 'Login successful',
                 'access_token': access_token,
@@ -75,6 +74,18 @@ def login():
             return jsonify({'message': 'Invalid user role'}), 403
     else:
         return jsonify({'message': 'Invalid credentials'}), 401
+
+# Add this decorator to verify JWT in the request before accessing the identity
+@app.before_request
+def before_request():
+    verify_jwt_in_request(optional=True)
+    
+@app.route('/protected', methods=['GET'])
+@jwt_required()  # This decorator ensures that a valid JWT is required for access
+def protected_route():
+    user_id = get_jwt_identity()
+    # Now you can use the user_id to retrieve user-specific information
+    return jsonify({'message': 'You have access to this protected route.', 'user_id': user_id})
 
 @app.route('/admin/beneficiaries',endpoint="get_beneficiaries", methods=['GET'])
 @jwt_required

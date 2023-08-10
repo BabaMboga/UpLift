@@ -96,6 +96,7 @@ const CharityPage = () => {
       <h1 className="font-epilogue font-semibold text-2xl text-white mt-6">
         Beneficiaries Stories
       </h1>
+      {beneficiaries && beneficiaries.length > 0 && (
       <div className="grid grid-cols-3 gap-4 mt-6">
         {beneficiaries.map((beneficiary) => (
           <div key={beneficiary.beneficiary_id} className='sm:w-[288px] w-full rounded-[15px] bg-[#1c1c24] cursor-pointer  mb-[30px] ml-[20px]'>
@@ -106,7 +107,9 @@ const CharityPage = () => {
           </div>
         ))}
       </div>
+      )}
 
+      
       <h1 className="font-epilogue font-semibold text-2xl text-white mt-12">
         Inventory sent to the beneficiaries
       </h1>
@@ -119,6 +122,10 @@ const CharityPage = () => {
           </div>
         ))}
       </div>
+      
+
+
+      
     </div>
 
       {/* Modal */}
