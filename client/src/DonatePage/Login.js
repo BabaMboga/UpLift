@@ -29,7 +29,7 @@ const Login = () => {
     const formData = { email: signemail, password: signpassword, role: selectedRole }; // Include selected role
   
     // Replace 'https://example.com/api/signup' with your actual backend API URL
-    fetch('', {
+    fetch('http://127.0.0.1:5000/api/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

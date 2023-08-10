@@ -28,55 +28,27 @@ db.init_app(app)
 def index():
     return "This is The UpLift User/Charit/Donation/Beneficiary/Inventory API"
 
-@app.route('/signup',endpoint="signup", methods=['POST'])  # Require a valid JWT token to access this endpoint
+@app.route('/api/signup', methods=['POST'])
 def signup():
-    data = request.get_json()
-    if not data:
-        return jsonify({'message': 'Missing JSON data in the request'}), 400
+    data = request.json
 
-    # Extract data from the JSON request
-    role = data.get('role')
-    username = data.get('username')
-    first_name = data.get('first_name')
-    last_name = data.get('last_name')
+    # Extract signup data from request
     email = data.get('email')
     password = data.get('password')
+    role = data.get('role')
 
-    #Validate required fields
-    if not role or not username or not first_name or not last_name or not email or not password:
-        return jsonify({'message': 'Missing required fields'}), 400
+    # Create a new user instance
+    new_user = User(email=email, password=password, role=role)
 
-    #Validate role
-    if role not in ('user', 'admin', 'charity'):
-        return jsonify({'message': 'Invalid role'}), 400
-    
-    #Validate email format
-    if '@' not in email or '.' not in email:
-        return jsonify({'message':'Invalid email format'}), 400
-    
-    #Check if the email is already registered
-    existing_user = User.query.filter_by(email=email).first()
-    if existing_user:
-        return jsonify({'message': 'Email is already registered'}), 400
-    
-    #Generate a password hash
-    hashed_password = generate_password_hash(password)
+    try:
+        # Add the new user to the database
+        db.session.add(new_user)
+        db.session.commit()
 
-    #Create a new User object
-    new_user = User(
-        email=email,
-        password=hashed_password,
-        role=role,
-        user_name=username,
-        first_name=first_name,
-        second_name=last_name
-    )
-
-    # Save the user information in the database
-    db.session.add(new_user)
-    db.session.commit()
-
-    return jsonify({'message': 'User created successfully'}), 201
+        return jsonify({'message': 'User signed up successfully.'}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'An error occurred while signing up.'}), 500
 
 @app.route('/login', endpoint="login", methods=['POST'])
 def login():
