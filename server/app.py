@@ -228,6 +228,18 @@ def post_donation():
 
     if not charity_id or not amount:
         return jsonify({'error': 'Missing required data'}), 400
+
+    
+    donation = Donation(donor_id=current_user_id, charity_id=charity_id, amount=amount, is_anonymous=is_anonymous)
+
+    try:
+        db.session.add(donation)
+        db.session.commit()
+        return jsonify({'message': 'Donation posted successfully.'}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'Failed to post donation.', 'details': str(e)}), 500
+    
 @app.route('charities/post-beneficiary-story', endpoint="post_beneficiary_story", methods=['POST'])
 @jwt_required
 def post_beneficiary_story():
@@ -241,16 +253,6 @@ def post_beneficiary_story():
             jsonify({'message':'Only charities can post beneficiary stories'}),
             403
         )
-    
-    donation = Donation(donor_id=current_user_id, charity_id=charity_id, amount=amount, is_anonymous=is_anonymous)
-
-    try:
-        db.session.add(donation)
-        db.session.commit()
-        return jsonify({'message': 'Donation posted successfully.'}), 201
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'error': 'Failed to post donation.', 'details': str(e)}), 500
     charity_id = data.get('charity_id')
     beneficiary_name = data.get('beneficiary_name')
     story = data.get('story')
