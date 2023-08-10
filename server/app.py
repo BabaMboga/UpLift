@@ -210,7 +210,36 @@ def delete_charity(charity_id):
         return jsonify({'message': 'Failed to delete charity.', 'error': str(e)}), 500
 
 
+@app.route('charities/post-beneficiary-story', endpoint="post_beneficiary_story", methods=['POST'])
+@jwt_required
+def post_beneficiary_story():
+    data = request.json
+    current_user_id = get_jwt_identity()
 
+    user = User.query.get(current_user_id)
+
+    if user.role != 'charity':
+        return make_response(
+            jsonify({'message':'Only charities can post beneficiary stories'}),
+            403
+        )
+    
+    charity_id = data.get('charity_id')
+    beneficiary_name = data.get('beneficiary_name')
+    story = data.get('story')
+
+    if not charity_id or not beneficiary_name or not story:
+        return jsonify({'error':'Missing required data'}), 400
+    
+    beneficiary = Beneficiary(charity_id=charity_id, beneficiary_name=beneficiary_name, story=story)
+
+    try:
+        db.session.add(beneficiary)
+        db.session.commit()
+        return jsonify({'message': 'Beneficiary story posted successfully'}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'Failed to post beneficiary story.', 'details': str(e)}, 500)
 
 
 @app.route('/beneficiaries/stories', endpoint="beneficiaries_stories", methods=['GET'])
