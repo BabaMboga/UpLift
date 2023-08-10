@@ -15,7 +15,7 @@ app.config['JWT_SECRET_KEY'] = 'your-jwt-secret-key'  # Change this to a strong 
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
 
-# jwt = JWTManager(app)
+jwt = JWTManager(app)
 
 CORS(app)
 
@@ -51,6 +51,7 @@ def signup():
         return jsonify({'error': 'An error occurred while signing up.'}), 500
 
 @app.route('/login', endpoint="login", methods=['POST'])
+# @jwt_required()
 def login():
     data = request.get_json()
     email = data.get('email')
@@ -58,9 +59,12 @@ def login():
     
     user = User.query.filter_by(email=email).first()
     
+    print("User:", user)
+    
     if user and user.password == password:
         if user.role == 'donor' or user.role == 'charity' or user.role == 'admin':
             access_token = create_access_token(identity=user.id)  # Assuming your user ID field is named 'id'
+            print("User ID in token:", get_jwt_identity())  # Debug print inside the context
             return jsonify({
                 'message': 'Login successful',
                 'access_token': access_token,
@@ -71,7 +75,6 @@ def login():
             return jsonify({'message': 'Invalid user role'}), 403
     else:
         return jsonify({'message': 'Invalid credentials'}), 401
-
 
 @app.route('/admin/beneficiaries',endpoint="get_beneficiaries", methods=['GET'])
 @jwt_required

@@ -48,7 +48,7 @@ const Login = () => {
   
 
   const handleLogin = async () => {
-    const response = await fetch('http://127.0.0.1:5000/login', {
+    const response = await fetch('http://127.0.0.1:5555/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -59,27 +59,33 @@ const Login = () => {
     const data = await response.json();
 
     if (response.ok) {
+      // Store user information in localStorage
       localStorage.setItem('access_token', data.access_token);
       localStorage.setItem('user_id', data.user_id);
       localStorage.setItem('role', data.role);
-
+    
+      // Redirect users based on their role
       switch (data.role) {
         case 'donor':
-          window.location.href = '/Home';
+          window.location.href = '/Home';  // Make sure this route exists
           break;
         case 'charity':
-          window.location.href = '/CharityPage';
+          window.location.href = '/CharityPage';  // Make sure this route exists
           break;
         case 'admin':
-          window.location.href = '/admin';
+          window.location.href = '/admin';  // Make sure this route exists
           break;
         default:
+          // Handle unknown role or redirect to a default route
+          console.error('Unknown role:', data.role);
+          // You might want to redirect to a default route here
           break;
       }
     } else {
       setErrorMessage(data.message); // Display error message
     }
   };
+    
   const handleLoginClick = () => {
     setIsModalOpen(true);
   };
