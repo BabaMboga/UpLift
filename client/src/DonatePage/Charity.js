@@ -40,18 +40,21 @@ const handleSearchResults = (results) => {
     setModalIsOpen(false);
   };
 
-  const handleDonation = () => {
-    // Perform actions based on the donationAmount, donationFrequency, anonymousDonor, setReminder, and paymentOption
-    // You can implement your payment processing logic here
+  const handleDonation = async () => {
+    if (paymentOption === 'paypal') {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/create-paypal-order', {
+          method: 'POST',
+        });
+        const data = await response.json();
+        window.location.href = data.approval_url; // Redirect to PayPal
+      } catch (error) {
+        console.error('Error creating PayPal order:', error);
+      }
+    } else {
+      // Handle other payment options here
+    }
 
-    // Reset the form after donation
-    setDonationAmount('');
-    setDonationFrequency('one-time');
-    setAnonymousDonor(false);
-    setSetReminder(false);
-    setPaymentOption('');
-
-    // Close the modal
     closeModal();
   };
 
@@ -183,9 +186,7 @@ const handleSearchResults = (results) => {
           Donate Now
         </button>
       </form>
-      <div className='text-black'>
-        <h1>{selectedCharity.testimonial}</h1>
-      </div>
+     
     </div>
   </div>
   )}

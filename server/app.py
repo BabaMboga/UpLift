@@ -6,7 +6,7 @@ from flask_cors import CORS
 from models import db, User, Charity, Donation, Beneficiary, Inventory , CharityApplication
 import os
 from sqlalchemy.orm import Session
-
+import paypalrestsdk
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///uplift.db'
@@ -170,12 +170,6 @@ def delete_charity(charity_id):
 
 
 
-
-
-
-
-
-
 @app.route('/beneficiaries/stories', endpoint="beneficiaries_stories", methods=['GET'])
 # @jwt_required
 def get_beneficiaries_stories():
@@ -232,6 +226,50 @@ def get_charity_applications():
         return jsonify(application_list), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400   
+    
+    
+    
+    
+    
+# Replace with your PayPal Sandbox credentials
+paypalrestsdk.configure({
+    "mode": "sandbox",
+    "client_id": "AcSW62OCv_utXTB8CGIoaQWulKSEgrYFUYX9_gkud-MODoW4lfx-9WiPb6QlmJIw3k8JQH8fiH62tx7O",
+    "client_secret": "EAjmdD2daF8pxiQ3dh3iSOsDmtv-RuifD-TyV_NcivBMOMmKmeESlLY_VNea-mzR2MF_Q1CitYyvgiuP"
+})
+
+@app.route('/create-paypal-order', methods=['POST'])
+def create_paypal_order():
+    payment = paypalrestsdk.Payment({
+        "intent": "sale",
+        "payer": {"payment_method": "paypal"},
+        "redirect_urls": {
+            "return_url": "YOUR_RETURN_URL",
+            "cancel_url": "YOUR_CANCEL_URL"
+        },
+        "transactions": [{
+            "item_list": {
+                "items": [{
+                    "name": "Sample Item",
+                    "sku": "item",
+                    "price": "10.00",
+                    "currency": "USD",
+                    "quantity": 1
+                }]
+            },
+            "amount": {
+                "total": "10.00",
+                "currency": "USD"
+            },
+            "description": "Sample Description"
+        }]
+    })
+
+    if payment.create():
+        approval_url = next(link.href for link in payment.links if link.rel == 'approval_url')
+        return jsonify({'approval_url': approval_url})
+    else:
+        return jsonify({'error': payment.error})
 
 
 

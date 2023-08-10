@@ -9,6 +9,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [ setErrorMessage] = useState('');
+  const [selectedRole, setSelectedRole] = useState('donor'); // Initialize with a default role
 
 
 // sign up states
@@ -25,10 +26,10 @@ const Login = () => {
   };
 
   const handleSignUp = () => {
-    const formData = { email: signemail, password: signpassword };
-
-    // Send the data to the server using fetch
-    fetch('http://localhost:8000/allData', {
+    const formData = { email: signemail, password: signpassword, role: selectedRole }; // Include selected role
+  
+    // Replace 'https://example.com/api/signup' with your actual backend API URL
+    fetch('', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -44,6 +45,7 @@ const Login = () => {
         console.error('Error saving sign-up data:', error);
       });
   };
+  
 
   const handleLogin = async () => {
     const response = await fetch('http://127.0.0.1:5000/login', {
@@ -253,46 +255,59 @@ const Login = () => {
 
 
 
-      {/* modal for signup */}
-      {showModal && (
-        <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded shadow-md">
-            <h2 className="text-2xl font-bold mb-4 font-epilogue">Sign Up</h2>
-            <div className="mb-4">
-              <label className="block text-gray-700 font-bold mb-2 font-epilogue">Email</label>
-              <input
-                type="email"
-                className="border rounded w-full py-2 px-3 focus:outline-none focus:shadow-outline"
-                value={signemail}
-                onChange={(e) => setsignEmail(e.target.value)}
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 font-bold mb-2 font-epilogue">Password</label>
-              <input
-                type="password"
-                className="border rounded w-full py-2 px-3 focus:outline-none focus:shadow-outline"
-                value={signpassword}
-                onChange={(e) => setsignPassword(e.target.value)}
-              />
-            </div>
-            <div className="flex justify-end">
-              <button
-                className="bg-[#82cfb7] text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2 font-epilogue"
-                onClick={handleSignUp}
-              >
-                Sign Up
-              </button>
-              <button
-                className="bg-red-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline font-epilogue"
-                onClick={handleModalClose}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+    {/* modal for signup */}
+{showModal && (
+  <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="bg-white p-6 rounded shadow-md">
+      <h2 className="text-2xl font-bold mb-4 font-epilogue">Sign Up</h2>
+      <div className="mb-4">
+        <label className="block text-gray-700 font-bold mb-2 font-epilogue">Email</label>
+        <input
+          type="email"
+          className="border rounded w-full py-2 px-3 focus:outline-none focus:shadow-outline"
+          value={signemail}
+          onChange={(e) => setsignEmail(e.target.value)}
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 font-bold mb-2 font-epilogue">Password</label>
+        <input
+          type="password"
+          className="border rounded w-full py-2 px-3 focus:outline-none focus:shadow-outline"
+          value={signpassword}
+          onChange={(e) => setsignPassword(e.target.value)}
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 font-bold mb-2 font-epilogue">Role</label>
+        <select
+          className="border rounded w-full py-2 px-3 focus:outline-none focus:shadow-outline"
+          value={selectedRole}
+          onChange={(e) => setSelectedRole(e.target.value)}
+        >
+          <option value="charity">Charity</option>
+          <option value="admin">Admin</option>
+          <option value="donor">Donor</option>
+        </select>
+      </div>
+      <div className="flex justify-end">
+        <button
+          className="bg-[#82cfb7] text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2 font-epilogue"
+          onClick={handleSignUp}
+        >
+          Sign Up
+        </button>
+        <button
+          className="bg-red-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline font-epilogue"
+          onClick={handleModalClose}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
       <div className="w-full flex flex-grow items-center justify-center px-8 mb-20">
         <div className="flex flex-col items-center justify-center text-center w-1/2">
