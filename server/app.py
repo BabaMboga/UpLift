@@ -7,6 +7,16 @@ from models import db, User, Charity, Donation, Beneficiary, Inventory , Charity
 import os
 from sqlalchemy.orm import Session
 import paypalrestsdk
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+cloudinary.config(
+    cloud_name='dmnoxtm4h',
+    api_key='719555992663579',
+    api_secret='gPlUP0rEy1DHIIxba5FG2TN6t_Q'
+)
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///uplift.db'
@@ -87,6 +97,26 @@ def protected_route():
     # Now you can use the user_id to retrieve user-specific information
     return jsonify({'message': 'You have access to this protected route.', 'user_id': user_id})
 
+# @app.route('/upload', methods=['POST'])
+# def upload():
+#     image = request.files.get('image')
+#     if image:
+#         result = cloudinary.uploader.upload(image)
+#         # result['secure_url'] contains the url of the uploaded
+#         return jsonify({'message': 'Image uploaded successfully'}) 
+#     else:
+#         return jsonify({'error': 'No image provided'}), 400
+    
+# @app.route('/display/<image_public_id>', methods=['GET'])
+# def display(image_public_id):
+#     image_url = cloudinary.utils.cloudinary_url(image_public_id, width=300, crop='fill')[0]
+#     return f'<img src="{image_url}" alt="Image">'
+
+# @app.route('/delete/<image_public_id>', methods=['DELETE'])
+# def delete(image_public_id):
+#     result = cloudinary.api.delete_resources([image_public_id])
+#     return jsonify({'message': 'Image deleted successfully'})
+
 @app.route('/admin/beneficiaries',endpoint="get_beneficiaries", methods=['GET'])
 # @jwt_required
 def get_beneficiaries():
@@ -123,7 +153,7 @@ def get_charities():
             'name': charity.name,
             'description': charity.description,
             'amount_received': charity.amount_received,
-            'image_url': charity.image_url  # Include the image_url field
+            'image_url': cloudinary.utils.cloudinary_url(charity.image_url, width=200, crop='fill')[0]  # Include the image_url field
         }
         for charity in charities
     ]
