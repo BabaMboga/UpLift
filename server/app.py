@@ -209,8 +209,35 @@ def delete_charity(charity_id):
         print("Error:", e)
         return jsonify({'message': 'Failed to delete charity.', 'error': str(e)}), 500
 
+@app.route('/post-donation', endpoint="post_donation", method=['POST'])
+@jwt_required
+def post_donation():
+    data = request.json
+    current_user_id = get_jwt_identity()
 
+    user = User.query.get(current_user_id)
+    if user.role != 'donor':
+        return make_response(
+            jsonify({'message': 'Only donors can post donations'}),
+            403
+        )
+    
+    charity_id = data.get('charity_id')
+    amount = data.get('amount')
+    is_anonymous = data.get('is_anonymous', False)
 
+    if not charity_id or not amount:
+        return jsonify({'error': 'Missing required data'}), 400
+    
+    donation = Donation(donor_id=current_user_id, charity_id=charity_id, amount=amount, is_anonymous=is_anonymous)
+
+    try:
+        db.session.add(donation)
+        db.session.commit()
+        return jsonify({'message': 'Donation posted successfully.'}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'Failed to post donation.', 'details': str(e)}), 500
 
 
 @app.route('/beneficiaries/stories', endpoint="beneficiaries_stories", methods=['GET'])
@@ -269,9 +296,6 @@ def get_charity_applications():
         return jsonify(application_list), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400   
-    
-    
-    
     
     
 # Replace with your PayPal Sandbox credentials
