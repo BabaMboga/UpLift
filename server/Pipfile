@@ -11,6 +11,8 @@ flask-cors = "*"
 sqlalchemy-serializer = "*"
 email-validator = "*"
 paypalrestsdk = "==1.1.0"
+markovify = "*"
+faker = "*"
 
 [dev-packages]
 
