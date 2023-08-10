@@ -37,6 +37,12 @@ We believe in transparency. Charities can provide detailed reports on how the fu
 
 ## Demo
 
+![My Image](/resources/Screenshot-2023-08-10-1.pn)
+
+![My Image](/resources/Screenshot-2023-08-10-2.png)
+
+![My Image](/resources/Screenshot-2023-08-10-3.png)
+
 Use the link provided to navigate to UpLift ("")
 
 ## Setup/Installation Requirements
