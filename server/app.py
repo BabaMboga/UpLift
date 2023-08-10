@@ -88,7 +88,7 @@ def protected_route():
     return jsonify({'message': 'You have access to this protected route.', 'user_id': user_id})
 
 @app.route('/admin/beneficiaries',endpoint="get_beneficiaries", methods=['GET'])
-@jwt_required
+# @jwt_required
 def get_beneficiaries():
     current_user_id = get_jwt_identity()
 

@@ -16,7 +16,7 @@ const CharityPage = () => {
     // Fetch beneficiaries from the Flask backend with JWT token
     fetch('http://127.0.0.1:5000/beneficiaries/stories', {
       headers: {
-        Authorization: `Bearer ${jwtToken}`, // Include JWT token in the headers
+        // Authorization: `Bearer ${jwtToken}`, // Include JWT token in the headers
       },
     })
       .then((response) => response.json())
@@ -28,7 +28,7 @@ const CharityPage = () => {
     // Fetch inventory from the Flask backend with JWT token
     fetch('http://127.0.0.1:5000/admin/inventory', {
       headers: {
-        Authorization: `Bearer ${jwtToken}`, // Include JWT token in the headers
+        // Authorization: `Bearer ${jwtToken}`, // Include JWT token in the headers
       },
     })
       .then((response) => response.json())
