@@ -1,6 +1,6 @@
 ![My Image](/resources/logo.png)
 
-# UpLift: Elevate Lives Illuminate Dreams
+
 
 #### This MVP showcases an automated donation platform that serves an admin, a charity and a donor for a pleasing user experience while donating or viewing a charity of their choice.(version 3.10.08.2023), 08/10/2023
 
