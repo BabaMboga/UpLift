@@ -10,10 +10,15 @@ flask-migrate = "*"
 flask-cors = "*"
 sqlalchemy-serializer = "*"
 email-validator = "*"
-paypalrestsdk = "==1.1.0"
+paypalrestsdk = "*"
 markovify = "*"
 faker = "*"
 cloudinary = "*"
+sendgrid = "*"
+werkzeug = "*"
+sqlalchemy = "*"
+flask-sqlalchemy = "*"
+datetime = "*"
 
 [dev-packages]
 
