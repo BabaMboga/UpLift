@@ -24,7 +24,7 @@ const handleSearchResults = (results) => {
 
   useEffect(() => {
     // Fetch the JSON data using the fetch function
-    fetch('http://127.0.0.1:5000/charities')
+    fetch('http://127.0.0.1:5555/charities')
       .then((response) => response.json())
       .then((data) => setCharities(data.charities)) // Assuming the API returns an array of charities directly
       .catch((error) => console.error('Error fetching data:', error));
