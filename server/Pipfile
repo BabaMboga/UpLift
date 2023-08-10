@@ -13,6 +13,7 @@ email-validator = "*"
 paypalrestsdk = "==1.1.0"
 markovify = "*"
 faker = "*"
+cloudinary = "*"
 
 [dev-packages]
 
