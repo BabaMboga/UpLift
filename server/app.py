@@ -269,6 +269,62 @@ def post_beneficiary_story():
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': 'Failed to post beneficiary story.', 'details': str(e)}, 500)
+    
+@app.route('/charities/non_anonymous_donors', endpoint="non_anonymous_donors", methods=['GET'])
+@jwt_required
+def view_non_anonymous_donors():
+    data = request.json
+    current_user_id = get_jwt_identity()
+
+    user = User.query.get(current_user_id)
+
+    if user.role != 'charity':
+        return make_response(
+            jsonify({'message': 'Only charities can view non-anonymous donors'}),
+            403
+        )
+    
+    charity_id = data.get('charity_id')
+
+    if not charity_id:
+        return jsonify({'error': 'Missing required data'}), 400
+    
+    donations = Donation.query.filter_by(charity_id=charity_id, is_anonymous=False).all()
+
+    donor_list = [
+        {
+            'donor_id': donation.donor_id,
+            'donor_emai': donation.donor.email,
+            'amount_donated': donation.amount
+        }
+        for donation in donations
+    ]
+
+    return jsonify({'non_anonymous_donors': donor_list}), 200
+
+@app.route('/charities/anonymous-donations', endpoint="anonymous_donatoins", methods=['GET'])
+@jwt_required
+def view_anonymous_donations():
+    data = request.json
+    current_user_id = get_jwt_identity()
+
+    user = User.query.get(current_user_id)
+
+    if user.role != 'charity':
+        return make_response(
+            jsonify({'message': 'Only charities can view anonymous donations'}),
+            403
+        )
+    
+    charity_id = data.get('charity_id')
+    if not charity_id:
+        return jsonify({'error': 'Missing required data'}), 400
+    
+    donations = Donation.query.filter_by(charity_id=charity_id, is_anonyous=True).all()
+
+    total_amount_donated_anonymously = sum(donation.amount for donation in donations)
+
+    return jsonify({'total_anonymous_donations': total_amount_donated_anonymously}), 200
 
 
 @app.route('/beneficiaries/stories', endpoint="beneficiaries_stories", methods=['GET'])
