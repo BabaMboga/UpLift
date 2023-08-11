@@ -6,7 +6,7 @@ from flask_cors import CORS
 from models import db, User, Charity, Donation, Beneficiary, Inventory , CharityApplication
 import os
 from sqlalchemy.orm import Session
-import paypalrestsdk
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///uplift.db'
