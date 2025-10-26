@@ -240,7 +240,7 @@ def post_donation():
         db.session.rollback()
         return jsonify({'error': 'Failed to post donation.', 'details': str(e)}), 500
     
-@app.route('charities/post-beneficiary-story', endpoint="post_beneficiary_story", methods=['POST'])
+@app.route('/charities/post-beneficiary-story', endpoint="post_beneficiary_story", methods=['POST'])
 @jwt_required
 def post_beneficiary_story():
     data = request.json
