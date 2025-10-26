@@ -14,7 +14,7 @@ const CharityPage = () => {
     const jwtToken = localStorage.getItem('jwtToken');
 
     // Fetch beneficiaries from the Flask backend with JWT token
-    fetch('http://127.0.0.1:5555/beneficiaries/stories', {
+    fetch('https://uplift-tr2a.onrender.com/beneficiaries/stories', {
       headers: {
         // Authorization: `Bearer ${jwtToken}`, // Include JWT token in the headers
       },
@@ -26,7 +26,7 @@ const CharityPage = () => {
       });
 
     // Fetch inventory from the Flask backend with JWT token
-    fetch('http://127.0.0.1:5555/admin/inventory', {
+    fetch('https://uplift-tr2a.onrender.com/admin/inventory', {
       headers: {
         // Authorization: `Bearer ${jwtToken}`, // Include JWT token in the headers
       },
@@ -48,7 +48,7 @@ const CharityPage = () => {
       };
 
       // Make a POST request to the server using fetch
-      await fetch('http://127.0.0.1:5000/application', {
+      await fetch('https://uplift-tr2a.onrender.com/application', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

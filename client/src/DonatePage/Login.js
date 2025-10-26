@@ -29,7 +29,7 @@ const Login = () => {
     const formData = { email: signemail, password: signpassword, role: selectedRole }; // Include selected role
   
     // Replace 'https://example.com/api/signup' with your actual backend API URL
-    fetch('http://127.0.0.1:5000/api/signup', {
+    fetch('https://uplift-tr2a.onrender.com/api/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ const Login = () => {
   
 
   const handleLogin = async () => {
-    const response = await fetch('http://127.0.0.1:5000/login', {
+    const response = await fetch('https://uplift-tr2a.onrender.com/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

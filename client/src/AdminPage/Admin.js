@@ -41,12 +41,12 @@ const Admin = () => {
   };
 
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/applications')
+    fetch('https://uplift-tr2a.onrender.com/applications')
       .then((response) => response.json())
       .then((data) => setCharityApplications(data))
       .catch((error) => console.error('Error fetching charity applications:', error))
 
-    fetch('http://127.0.0.1:5000/charities')
+    fetch('https://uplift-tr2a.onrender.com/charities')
       .then((response) => response.json())
       .then((data) => setCharities(data.charities))
       .catch((error) => console.error('Error fetching charities:', error));
@@ -65,7 +65,7 @@ const Admin = () => {
 
 
   const handleDelete = (charityId) => {
-    fetch(`http://127.0.0.1:5000/api/charities/${charityId}`, {
+    fetch(`https://uplift-tr2a.onrender.com/api/charities/${charityId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

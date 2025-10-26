@@ -39,7 +39,7 @@ db.init_app(app)
 
 @app.route('/', endpoint="index")
 def index():
-    return "This is The UpLift User/Charit/Donation/Beneficiary/Inventory API"
+    return "This is The UpLift User/Charity/Donation/Beneficiary/Inventory API"
 
 @app.route('/api/signup', methods=['POST'])
 def signup():

@@ -24,7 +24,7 @@ const handleSearchResults = (results) => {
 
   useEffect(() => {
     // Fetch the JSON data using the fetch function
-    fetch('http://127.0.0.1:5555/charities')
+    fetch('https://uplift-tr2a.onrender.com/charities')
       .then((response) => response.json())
       .then((data) => setCharities(data.charities)) // Assuming the API returns an array of charities directly
       .catch((error) => console.error('Error fetching data:', error));
@@ -43,7 +43,7 @@ const handleSearchResults = (results) => {
   const handleDonation = async () => {
     if (paymentOption === 'paypal') {
       try {
-        const response = await fetch('http://127.0.0.1:5000/create-paypal-order', {
+        const response = await fetch('https://uplift-tr2a.onrender.com/create-paypal-order', {
           method: 'POST',
         });
         const data = await response.json();
