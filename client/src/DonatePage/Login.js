@@ -8,7 +8,7 @@ const Login = () => {
   const [selectedUserType, setSelectedUserType] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [ setErrorMessage] = useState('');
+  const [ errorMessage, setErrorMessage] = useState('');
   const [selectedRole, setSelectedRole] = useState('donor'); // Initialize with a default role
 
 
@@ -47,7 +47,8 @@ const Login = () => {
   };
   
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
     const response = await fetch('https://uplift-tr2a.onrender.com/login', {
       method: 'POST',
       headers: {
@@ -82,7 +83,7 @@ const Login = () => {
           break;
       }
     } else {
-      setErrorMessage(data.message); // Display error message
+      setErrorMessage(data.message || 'Invalid credentials'); // Display error message
     }
   };
     
@@ -128,7 +129,7 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
             </div>
-            <button type="submit"  className='bg-[#82cfb7] hover:bg-green-200 px-4 py-2 rounded' onClick={handleLogin}>
+            <button type="submit" onCLick={handleLogin} className='bg-[#82cfb7] hover:bg-green-200 px-4 py-2 rounded' onClick={handleLogin}>
               Login as donor
             </button>
           </form>
