@@ -209,7 +209,7 @@ def delete_charity(charity_id):
         print("Error:", e)
         return jsonify({'message': 'Failed to delete charity.', 'error': str(e)}), 500
 
-@app.route('/post-donation', endpoint="post_donation", method=['POST'])
+@app.route('/post-donation', endpoint="post_donation", methods=['POST'])
 @jwt_required
 def post_donation():
     data = request.json
